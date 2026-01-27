@@ -1,0 +1,80 @@
+﻿@model Estoque.Models.Movimentacao
+
+@{
+    ViewData["Title"] = "Detalhes da Movimentação";
+}
+
+<!-- ================= TÍTULO ================= -->
+<div class="d-flex align-items-center mb-4">
+    <h2 class="fw-bold mb-0">📄 Detalhes da Movimentação</h2>
+    <button class="btn btn-sm btn-outline-secondary ms-2"
+            data-bs-toggle="tooltip"
+            title="Visualize todas as informações desta movimentação">
+        ❔
+    </button>
+</div>
+
+<!-- ================= CARD COM DETALHES ================= -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+
+        <!-- Fotos do Produto e da Movimentação -->
+        <div class="row mb-3 text-center">
+            <div class="col-md-6 mb-2">
+                <img src="@Url.Content(Model.Produto.Foto != null ? "~/uploads/produtos/" + Model.Produto.Foto : "~/images/no-image.png")"
+                     class="img-fluid rounded"
+                     style="max-height:200px;" />
+                <div class="mt-1"><strong>Produto</strong></div>
+            </div>
+            <div class="col-md-6 mb-2">
+                <img src="@Url.Content(Model.Foto != null ? "~/uploads/movimentacoes/" + Model.Foto : "~/images/no-image.png")"
+                     class="img-fluid rounded"
+                     style="max-height:200px;" />
+                <div class="mt-1"><strong>Movimentação</strong></div>
+            </div>
+        </div>
+
+        <!-- Detalhes -->
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <strong>Produto:</strong> <span class="fw-semibold">@Model.Produto.Nome</span>
+            </div>
+            <div class="col-md-4">
+                <strong>Tipo:</strong>
+                <span class="badge @(Model.Tipo == "Entrada" ? "bg-success" : "bg-danger")">
+                    @Model.Tipo
+                </span>
+            </div>
+            <div class="col-md-4">
+                <strong>Quantidade:</strong> @Model.Quantidade
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-4">
+                <strong>Patrimônio:</strong> @Model.Patrimonio
+            </div>
+            <div class="col-md-4">
+                <strong>Setor:</strong> @Model.Setor
+            </div>
+            <div class="col-md-4">
+                <strong>Data:</strong> @Model.Data.ToString("dd/MM/yyyy HH:mm")
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================= BOTOES ================= -->
+<div class="d-flex gap-2">
+    <a asp-action="Index" class="btn btn-secondary">⬅️ Voltar</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">✏️ Editar</a>
+</div>
+
+@section Scripts {
+    <script>
+        // Ativa tooltips do Bootstrap
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(el => new bootstrap.Tooltip(el));
+    </script>
+}

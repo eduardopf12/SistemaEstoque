@@ -1,0 +1,362 @@
+﻿html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+    color: var(--bs-secondary-color);
+    text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+    text-align: start;
+}
+/* ========================= DARK MODE SUAVE ========================= */
+
+html.dark-mode, body.dark-mode {
+    background-color: #1e1e2f;
+    color: #e4e6eb;
+}
+    /* Cards */
+
+    body.dark-mode .card {
+        background-color: #25273c;
+        color: #f1f1f1;
+        border-color: #2f3147;
+    }
+    /* Inputs */
+
+    body.dark-mode .form-control, body.dark-mode .form-select {
+        background-color: #2c2f4a;
+        color: #f1f1f1;
+        border-color: #3a3d5c;
+    }
+
+        body.dark-mode .form-control::placeholder {
+            color: #b5b8d6;
+        }
+    /* Botões */
+
+    body.dark-mode .btn-primary {
+        background-color: #4c6ef5;
+        border-color: #4c6ef5;
+    }
+
+    body.dark-mode .btn-secondary {
+        background-color: #495057;
+        border-color: #495057;
+    }
+    /* Tabelas */
+
+    body.dark-mode table {
+        color: #e4e6eb;
+    }
+
+    body.dark-mode .table-light {
+        background-color: #2c2f4a;
+    }
+    /* Navbar */
+
+    body.dark-mode .navbar {
+        background-color: #181a2b !important;
+    }
+    /* ===== Footer - Dark Mode (corrige text-muted) ===== */
+
+    body.dark-mode footer, body.dark-mode footer .text-muted {
+        color: #aab0d6 !important; /* texto claro e legível */
+    }
+    /* Links */
+
+    body.dark-mode a {
+        color: #9aa5ff;
+    }
+
+        body.dark-mode a:hover {
+            color: #c3ccff;
+        }
+    /* Variáveis Bootstrap da tabela */
+
+    body.dark-mode .table {
+        --bs-table-bg: #25273c;
+        --bs-table-striped-bg: #2c2f4a;
+        --bs-table-striped-color: #e4e6eb;
+        --bs-table-hover-bg: #31355a;
+        --bs-table-hover-color: #ffffff;
+        --bs-table-color: #e4e6eb;
+        border-color: #3a3d5c;
+    }
+        /* Cabeçalho */
+
+        body.dark-mode .table thead {
+            background-color: #2c2f4a;
+        }
+            /* ===== Ajuste cabeçalho tabela - Dark Mode ===== */
+
+            body.dark-mode .table thead th {
+                background-color: #1f2235; /* fundo escuro */
+                color: #e6e9ff !important; /* texto claro */
+                border-bottom: 1px solid #3a3d5c;
+            }
+        /* ===== Mensagem de tabela vazia - Dark Mode ===== */
+
+        body.dark-mode .table tbody td[colspan] {
+            color: #cfd3ff !important; /* texto claro visível */
+            background-color: #2c2f4a; /* fundo destacado */
+            text-align: center;
+            font-style: italic;
+        }
+    /* ===== MODAL - DARK MODE ===== */
+
+    body.dark-mode .modal-content {
+        background-color: #25273c;
+        color: #e4e6eb;
+    }
+
+    body.dark-mode .modal-header {
+        border-bottom: 1px solid #3a3d5c;
+    }
+
+    body.dark-mode .modal-title {
+        color: #ffffff;
+    }
+
+    body.dark-mode .modal-body {
+        color: #d6d9ff;
+    }
+    /* Texto dos detalhes */
+
+    body.dark-mode #modalDetalhes {
+        color: #cfd3ff;
+        font-weight: 500;
+    }
+    /* Botão fechar */
+
+    body.dark-mode .btn-close {
+        filter: invert(1);
+    }
+    /* Hover */
+
+    body.dark-mode .table-hover tbody tr:hover {
+        background-color: #31355a;
+    }
+    /* Classe Bootstrap table-light */
+
+    body.dark-mode .table-light {
+        background-color: #2c2f4a !important;
+    }
+    /* Card header branco */
+
+    body.dark-mode .card-header.bg-white {
+        background-color: #1f2235 !important;
+        color: #cfd3ff;
+    }
+    /* ========================= CORREÇÕES DE text-muted NO DARK MODE ========================= */ /* text-muted genérico (avisos, textos soltos) */
+
+    body.dark-mode .text-muted {
+        color: #bfc5ff !important; /* cinza claro legível */
+    }
+    /* list-group no dark mode */
+
+    body.dark-mode .list-group-item {
+        background-color: #25273c;
+        color: #e4e6eb;
+        border-color: #3a3d5c;
+    }
+        /* list-group-item com text-muted */
+
+        body.dark-mode .list-group-item.text-muted {
+            color: #bfc5ff !important;
+            font-style: italic;
+        }
+/* Fundo animado full-screen */
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow: auto; /* ✅ permite rolar a página normalmente */
+    font-family: 'Segoe UI', sans-serif;
+}
+/* Gradiente animado */
+
+.bg-animated {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2, #6a11cb, #ff758c);
+    background-size: 400% 400%;
+    animation: gradientBG 20s ease infinite;
+    z-index: -1; /* Fica atrás do conteúdo */
+}
+/* Keyframes do gradiente */
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+/* Partículas flutuantes leves */
+
+.particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: moveParticle 20s linear infinite;
+}
+
+@keyframes moveParticle {
+    0% {
+        transform: translateY(0) translateX(0);
+    }
+
+    50% {
+        transform: translateY(-100px) translateX(50px);
+    }
+
+    100% {
+        transform: translateY(0) translateX(0);
+    }
+}
+/* Remove a linha superior do modal footer específico */
+
+#detalhesModal .modal-footer {
+    border-top: none;
+}
+
+.card-lateral-atualizacoes {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 460px;
+    max-height: calc(100vh - 120px);
+    background: #fff;
+    border-radius: 16px;
+    z-index: 1050;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* ⬅️ IMPORTANTE */
+}
+    /* HEADER NÃO ROLA */
+
+    .card-lateral-atualizacoes .card-header {
+        border-radius: 16px 16px 0 0;
+        background: #f8f9fa;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    /* BODY É QUEM ROLA */
+
+    .card-lateral-atualizacoes .card-body {
+        overflow-y: auto;
+        padding: 16px;
+    }
+    /* FOOTER FIXO */
+
+    .card-lateral-atualizacoes .card-footer {
+        padding: 12px;
+        border-top: 1px solid #eee;
+        background: #fff;
+    }
+/* Animação */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+/* Esconder no mobile */
+
+@media (max-width: 768px) {
+    .card-lateral-atualizacoes {
+        display: none;
+    }
+}
+/* ========================= CARD LATERAL - DARK MODE ========================= */
+
+body.dark-mode .card-lateral-atualizacoes {
+    background-color: #25273c;
+    color: #e4e6eb;
+}
+
+    body.dark-mode .card-lateral-atualizacoes .card-header {
+        background-color: #1f2235;
+        color: #cfd3ff;
+        border-bottom: 1px solid #3a3d5c;
+    }
+
+    body.dark-mode .card-lateral-atualizacoes .card-footer {
+        background-color: #25273c;
+        border-top: 1px solid #3a3d5c;
+    }
+
+    body.dark-mode .card-lateral-atualizacoes .text-muted {
+        color: #bfc5ff !important;
+    }
+    /* Botão fechar visível no dark */
+
+    body.dark-mode .card-lateral-atualizacoes .btn-close {
+        filter: invert(1);
+    }
+
+/* =========================
+   LOGIN (sem scroll)
+========================= */
+body.login-page {
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* =========================
+   PÁGINAS NORMAIS
+========================= */
+body:not(.login-page) {
+    min-height: 100vh;
+    overflow-y: auto;
+}
+
+body.login-page .particle {
+    position: fixed;
+}
+
+body:not(.login-page) .particle {
+    display: none;
+}

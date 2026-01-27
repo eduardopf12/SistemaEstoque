@@ -1,0 +1,64 @@
+﻿@model IEnumerable<Estoque.Models.AtualizacaoSistema>
+
+@{
+    ViewData["Title"] = "Histórico de Atualizações";
+}
+
+<h2 class="fw-bold mb-4">📄 Histórico de Atualizações</h2>
+
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        @foreach (var item in Model)
+        {
+            var ehNovo = (DateTime.Now - item.Data).TotalHours <= 24;
+
+            string icone = item.Tipo?.ToLower() switch
+            {
+                "entrada" => "⬆️",
+                "saida" => "⬇️",
+                "estoque" => "📦",
+                "movimentacao" => "🔄",
+                "produto" => "📦",
+                _ => "⚙️"
+            };
+
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <span>@Html.Raw(icone)</span>
+                                <span class="ms-2">
+                                    @if (item.Tipo == "produto" && !string.IsNullOrEmpty(item.ProdutoNome))
+                                    {
+                                        @($"Produto cadastrado: {item.ProdutoNome}")
+                                    }
+                                    else
+                                    {
+                                        @item.Titulo
+                                    }
+                                </span>
+                            </div>
+
+                            @if (ehNovo)
+                            {
+                                <span class="badge bg-danger">Novo</span>
+                            }
+                        </div>
+
+                        <div class="text-secondary small mt-1">
+                            🕓 @item.Data.ToString("dd/MM/yyyy HH:mm")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p class="text-muted">Nenhuma atualização registrada.</p>
+        </div>
+    }
+</div>

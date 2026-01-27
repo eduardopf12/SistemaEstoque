@@ -1,0 +1,190 @@
+﻿@model Estoque.Models.Movimentacao
+
+<!-- TÍTULO -->
+<div class="mb-4">
+    <h2 class="fw-bold">✏️ Editar Movimentação</h2>
+    <span class="text-muted">Atualize as informações da movimentação selecionada</span>
+</div>
+
+<!-- CARD DO FORMULÁRIO -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                🔄 Dados da Movimentação
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- PRODUTO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Produto</label>
+                        <select asp-for="ProdutoId"
+                                class="form-select"
+                                id="produtoSelect">
+                            <option value="">Selecione um produto</option>
+
+                            @foreach (var p in ViewBag.Produtos)
+                            {
+                                <option value="@p.Id"
+                                        data-foto="@p.Foto"
+                                        selected="@(p.Id == Model.ProdutoId)">
+                                    @p.Nome
+                                </option>
+                            }
+                        </select>
+
+                        <span asp-validation-for="ProdutoId" class="text-danger"></span>
+                    </div>
+
+                    <!-- TIPO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo</label>
+                        <select asp-for="Tipo" class="form-select">
+                            <option value="">Selecione o tipo</option>
+                            <option value="Entrada">⬆️ Entrada</option>
+                            <option value="Saida">⬇️ Saída</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                    </div>
+
+                    <!-- QUANTIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quantidade</label>
+                        <input asp-for="Quantidade"
+                               type="number"
+                               class="form-control"
+                               placeholder="Informe a quantidade" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- UNIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Unidade</label>
+                        <input asp-for="Unidade"
+                               type="text"
+                               class="form-control"
+                               placeholder="Ex: kg, litro, unidade" />
+                        <span asp-validation-for="Unidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- SETOR RESPONSÁVEL -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Setor Responsável</label>
+                        <input asp-for="Setor"
+                               type="text"
+                               class="form-control"
+                               placeholder="Informe o setor responsável" />
+                        <span asp-validation-for="Setor" class="text-danger"></span>
+                    </div>
+
+                    <!-- PATRIMÔNIO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Patrimônio (opcional)</label>
+                        <input asp-for="Patrimonio"
+                               type="text"
+                               class="form-control"
+                               placeholder="Número do patrimônio" />
+                        <span asp-validation-for="Patrimonio" class="text-danger"></span>
+                    </div>
+
+                    <!-- FOTO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Foto da Movimentação (opcional)</label>
+
+                        <div class="mb-2 text-center">
+                            <img id="previewImagem"
+                                 src="@(string.IsNullOrEmpty(Model.Foto)
+                                                                        ? Url.Content("~/images/no-image.png")
+                                                                        : Url.Content("~/uploads/movimentacoes/" + Model.Foto))"
+                                 class="img-thumbnail"
+                                 style="max-width:200px; max-height:200px; object-fit:cover; cursor:pointer;"
+                                 onclick="abrirModal(this.src)" />
+                        </div>
+
+                        <input asp-for="FotoUpload" type="file" class="form-control" accept="image/*" onchange="previewNovaFoto(event)" />
+                        <span asp-validation-for="FotoUpload" class="text-danger"></span>
+                    </div>
+
+                    <!-- AÇÕES -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ⬅️ Voltar
+                        </a>
+
+                        <button type="submit" class="btn btn-success shadow-sm">
+                            💾 Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VALIDAÇÃO -->
+        <div class="text-danger mt-3">
+            @Html.ValidationSummary()
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="fotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body text-center p-3">
+                <img id="fotoModalImg" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function atualizarImagemProduto() {
+            const select = document.getElementById("produtoSelect");
+            const img = document.getElementById("previewImagem");
+
+            if (!select || !img) return;
+
+            const option = select.options[select.selectedIndex];
+            const fotoProduto = option.getAttribute("data-foto");
+
+            if (fotoProduto && fotoProduto !== "") {
+                img.src = `/uploads/produtos/${fotoProduto}`;
+            } else {
+                img.src = "/images/no-image.png";
+            }
+        }
+
+        // Preview da nova foto enviada
+        function previewNovaFoto(event) {
+            const img = document.getElementById("previewImagem");
+            const file = event.target.files[0];
+            if (file) {
+                img.src = URL.createObjectURL(file);
+            }
+        }
+
+        // Atualiza imagem ao trocar produto
+        document.getElementById("produtoSelect")
+            .addEventListener("change", atualizarImagemProduto);
+
+        // 🔥 ESSA LINHA É A MAIS IMPORTANTE
+        // Carrega a imagem automaticamente ao abrir o Edit
+        window.addEventListener("DOMContentLoaded", atualizarImagemProduto);
+
+        // Modal
+        function abrirModal(src) {
+            document.getElementById("fotoModalImg").src = src;
+            new bootstrap.Modal(document.getElementById('fotoModal')).show();
+        }
+    </script>
+
+}

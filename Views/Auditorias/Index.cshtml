@@ -1,0 +1,195 @@
+﻿@model IEnumerable<Estoque.Models.Auditoria>
+
+@{
+    ViewData["Title"] = "Auditoria do Sistema";
+}
+
+<!-- TÍTULO -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <!-- TÍTULO + AJUDA -->
+        <div class="d-flex align-items-center gap-2">
+            <h2 class="fw-bold mb-0">📊 Auditoria do Sistema</h2>
+
+            <button class="btn btn-sm btn-outline-secondary p-1"
+                    data-bs-toggle="tooltip"
+                    title="Aqui você verifica todo tipo de modificação feita pelo usuário.">
+                ❔
+            </button>
+        </div>
+
+        <!-- SUBTÍTULO -->
+        <span class="text-muted">
+            Registro de ações realizadas no sistema
+        </span>
+    </div>
+</div>
+
+
+<!-- FILTROS -->
+<form method="get" class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2 align-items-end">
+
+            <div class="col-md-3">
+                <label class="form-label">👤 Usuário</label>
+                <input type="text"
+                       name="usuario"
+                       value="@ViewBag.Usuario"
+                       class="form-control"
+                       placeholder="Buscar usuário..." />
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">⚙️ Ação</label>
+                <select name="acao" class="form-select">
+                    <option value="">Todas</option>
+                    <option value="CREATE" selected="@(ViewBag.Acao == "CREATE")">CREATE</option>
+                    <option value="EDIT" selected="@(ViewBag.Acao == "EDIT")">EDIT</option>
+                    <option value="DELETE" selected="@(ViewBag.Acao == "DELETE")">DELETE</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">📅 De</label>
+                <input type="date" name="dataInicio" class="form-control" />
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label">📅 Até</label>
+                <input type="date" name="dataFim" class="form-control" />
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary w-100">
+                    🔍 Filtrar
+                </button>
+            </div>
+
+        </div>
+    </div>
+</form>
+
+<!-- TABELA -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header fw-bold">
+        📋 Registros de Auditoria
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Data</th>
+                    <th>Usuário</th>
+                    <th>Ação</th>
+                    <th>Entidade</th>
+                    <th>Detalhes</th>
+                    <th>Motivo</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Data.ToString("dd/MM/yyyy HH:mm")</td>
+
+                            <td class="fw-semibold">
+                                @item.Usuario
+                            </td>
+
+                            <td>
+                                <span class="badge
+                                            @(item.Acao == "CREATE" ? "bg-success" :
+                                                                            item.Acao == "EDIT" ? "bg-warning text-dark" :
+                                                                            item.Acao == "DELETE" ? "bg-danger" :
+                                                                            "bg-secondary")">
+                            @item.Acao
+                        </span>
+                    </td>
+
+
+                            <td>
+                                <button class="btn btn-sm btn-outline-info"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#detalhesModal"
+                                        data-detalhes="@($"Produto: {item.Produto} | Tipo: {item.Tipo} | Quantidade: {item.Quantidade}")">
+                                    👁️ Ver
+                                </button>
+                            </td>
+
+                            <td class="fw-semibold text-danger">
+                                @item.Motivo
+                            </td>
+                        </tr>
+                                }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Nenhum registro encontrado.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- BOTÃO VOLTAR -->
+<div class="mt-4">
+    <a asp-controller="Dashboard"
+       asp-action="Index"
+       class="btn btn-secondary shadow-sm">
+        ⬅️ Voltar
+    </a>
+</div>
+
+<!-- MODAL DETALHES -->
+<div class="modal fade" id="detalhesModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">📄 Detalhes da Auditoria</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group" id="modalDetalhesList">
+                    <!-- Detalhes serão preenchidos pelo JS -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const modal = document.getElementById('detalhesModal');
+        const detalhesList = document.getElementById('modalDetalhesList');
+
+               modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const detalhes = button.getAttribute('data-detalhes');
+
+            detalhesList.innerHTML = '';
+
+            const itens = detalhes.split('|');
+            itens.forEach(item => {
+                const partes = item.split(':');
+                const li = document.createElement('li');
+                li.className = 'list-group-item';
+                li.innerHTML = `<strong>${partes[0].trim()}:</strong> ${partes[1]?.trim() ?? ''}`;
+                detalhesList.appendChild(li);
+            });
+        });
+
+    </script>
+}
+

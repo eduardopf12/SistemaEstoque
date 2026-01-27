@@ -1,0 +1,176 @@
+﻿@model Estoque.Models.Movimentacao
+
+<!-- TÍTULO -->
+<div class="mb-4">
+    <h2 class="fw-bold">➕ Nova Movimentação</h2>
+    <span class="text-muted">Registrar entrada ou saída de produtos no estoque</span>
+</div>
+
+<!-- CARD DO FORMULÁRIO -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                📦 Dados da Movimentação
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <!-- PRODUTO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Produto</label>
+                        <select asp-for="ProdutoId"
+                                class="form-select"
+                                id="produtoSelect">
+                            <option value="">Selecione um produto</option>
+
+                            @foreach (var p in ViewBag.Produtos)
+                            {
+                                <option value="@p.Id"
+                                        data-foto="@p.Foto">
+                                    @p.Nome
+                                </option>
+                            }
+                        </select>
+
+                        <span asp-validation-for="ProdutoId" class="text-danger"></span>
+                    </div>
+
+                    <!-- FOTO DO PRODUTO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Foto da Movimentação (opcional)</label>
+                        <input type="file"
+                               asp-for="FotoUpload"
+                               class="form-control"
+                               accept="image/*"
+                               onchange="previewFoto(event)" />
+
+                        <div class="mt-3 text-center">
+                            <img id="previewImagem"
+                                 src="~/images/no-image.png"
+                                 class="img-thumbnail"
+                                 style="max-width:200px; display:none; cursor:pointer;"
+                                 onclick="abrirModal(this.src)" />
+                        </div>
+                    </div>
+
+                    <!-- TIPO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo</label>
+                        <select asp-for="Tipo" class="form-select">
+                            <option value="">Selecione o tipo</option>
+                            <option value="Entrada">⬆️ Entrada</option>
+                            <option value="Saida">⬇️ Saída</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                    </div>
+
+                    <!-- QUANTIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quantidade</label>
+                        <input asp-for="Quantidade"
+                               type="number"
+                               class="form-control"
+                               placeholder="Informe a quantidade" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- UNIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Unidade</label>
+                        <input asp-for="Unidade"
+                               type="text"
+                               class="form-control"
+                               placeholder="Ex: kg, litro, unidade" />
+                        <span asp-validation-for="Unidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- SETOR RESPONSÁVEL -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Setor Responsável</label>
+                        <input asp-for="Setor"
+                               type="text"
+                               class="form-control"
+                               placeholder="Informe o setor responsável" />
+                        <span asp-validation-for="Setor" class="text-danger"></span>
+                    </div>
+
+                    <!-- PATRIMÔNIO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Patrimônio (opcional)</label>
+                        <input asp-for="Patrimonio"
+                               type="text"
+                               class="form-control"
+                               placeholder="Número do patrimônio" />
+                        <span asp-validation-for="Patrimonio" class="text-danger"></span>
+                    </div>
+
+                    <!-- AÇÕES -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ⬅️ Voltar
+                        </a>
+
+                        <button type="submit" class="btn btn-success shadow-sm">
+                            💾 Salvar Movimentação
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VALIDAÇÃO -->
+        <div class="text-danger mt-3">
+            @Html.ValidationSummary()
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="fotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body text-center p-3">
+                <img id="fotoModalImg" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function previewFoto(event) {
+            const img = document.getElementById("previewImagem");
+            const file = event.target.files[0];
+            if (file) {
+                img.src = URL.createObjectURL(file);
+                img.style.display = "block";
+            }
+        }
+
+        function abrirModal(src) {
+            document.getElementById("fotoModalImg").src = src;
+            new bootstrap.Modal(document.getElementById('fotoModal')).show();
+        }
+
+            document.getElementById("produtoSelect").addEventListener("change", function () {
+            const option = this.options[this.selectedIndex];
+            const foto = option.getAttribute("data-foto");
+            const img = document.getElementById("previewImagem");
+
+            if (foto) {
+                img.src = `/uploads/produtos/${foto}`;
+                img.style.display = "block";
+            } else {
+                img.style.display = "none";
+            }
+        });
+    </script>
+}
+

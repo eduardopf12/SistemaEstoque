@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+@section BodyClass {
+        login-page
+}
+
+<div class="bg-animated"></div> <!-- fundo animado -->
+
+<div class="row justify-content-center align-items-center" style="min-height: 100vh; position: relative; z-index: 1;">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header text-center fw-bold">
+                🔐 Acesso ao Sistema
+            </div>
+
+            <div class="card-body">
+                <h4 class="text-center fw-bold mb-3">Bem-vindo 👋</h4>
+                <p class="text-center text-muted mb-4">
+                    Faça login para acessar o sistema de estoque
+                </p>
+
+                <!-- ALERTA DE SUCESSO -->
+                @if (TempData["Sucesso"] != null)
+                {
+                    <div class="alert alert-success text-center">
+                        @TempData["Sucesso"]
+                    </div>
+                }
+
+                <!-- ALERTA DE ERRO -->
+                @if (ViewBag.Erro != null)
+                {
+                    <div class="alert alert-danger text-center">
+                        ⚠️ @ViewBag.Erro
+                    </div>
+                }
+
+                <form method="post" autocomplete="off">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email"
+                               name="email"
+                               class="form-control"
+                               placeholder="seu@email.com"
+                               required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Senha</label>
+                        <input type="password"
+                               name="senha"
+                               class="form-control"
+                               placeholder="••••••••"
+                               required />
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary shadow-sm">
+                            🚀 Entrar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Partículas flutuantes -->
+@for (int i = 0; i < 30; i++)
+{
+    <div class="particle" style="top:@(new Random().Next(0, 100))%; left:@(new Random().Next(0, 100))%; width:@(new Random().Next(5, 15))px; height:@(new Random().Next(5, 15))px;"></div>
+}
+

@@ -1,0 +1,17 @@
+# Visual Studio
+.vs/
+bin/
+obj/
+
+# Configurações sensíveis
+appsettings.json
+appsettings.Development.json
+
+# Logs
+*.log
+
+# Uploads
+wwwroot/uploads/
+
+# User secrets
+secrets.json

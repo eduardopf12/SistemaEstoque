@@ -1,0 +1,307 @@
+﻿@model IEnumerable<Estoque.Models.Produto>
+
+<!-- TÍTULO -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <!-- Título + ajuda lado a lado -->
+    <div class="d-flex align-items-center gap-2">
+        <h2 class="fw-bold mb-0">📦 Produtos</h2>
+        <button class="btn btn-sm btn-outline-secondary p-1"
+                data-bs-toggle="tooltip"
+                title="Aqui você cadastra todos os produtos do estoque.">
+            ❔
+        </button>
+    </div>
+
+    <!-- Botão Novo Produto -->
+    <a asp-action="Create" class="btn btn-primary shadow-sm">
+        ➕ Novo Produto
+    </a>
+</div>
+
+
+<!-- FILTROS -->
+<div class="card border-0 shadow-sm mb-3">
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-md-6">
+                <input type="text"
+                       id="searchInput"
+                       class="form-control"
+                       placeholder="🔍 Buscar produto pelo nome..." />
+            </div>
+
+            <div class="col-md-4">
+                <select id="estoqueFilter" class="form-select">
+                    <option value="all">📦 Todos</option>
+                    <option value="com">✅ Com estoque</option>
+                    <option value="sem">❌ Sem estoque</option>
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-secondary w-100" onclick="limparFiltros()">
+                    🧹 Limpar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TABELA -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold">
+        📋 Lista de Produtos
+    </div>
+
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0" id="produtosTable">
+            <thead class="table-light">
+                <tr>
+                    <th class="text-center">Foto</th>
+                    <th>Produto</th>
+                    <th>Descrição</th>
+                    <th>Estoque</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    bool bloqueado = item.Estoque > 0;
+
+                    <tr>
+                        <!-- FOTO -->
+                        <td class="text-center">
+                            @if (!string.IsNullOrEmpty(item.Foto))
+                            {
+                                <img src="~/uploads/produtos/@item.Foto"
+                                     class="img-thumbnail"
+                                     style="width:60px; height:60px; object-fit:cover; cursor:pointer;"
+                                     onclick="abrirFotoModal('/uploads/produtos/@item.Foto')" />
+                            }
+                            else
+                            {
+                                <img src="~/images/no-image.png"
+                                     class="img-thumbnail opacity-50"
+                                     style="width:60px; height:60px; object-fit:cover;" />
+                            }
+                        </td>
+
+                        <!-- NOME -->
+                        <td class="fw-semibold">@item.Nome</td>
+
+                        <!-- DESCRIÇÃO -->
+                        <td>@item.Descricao</td>
+
+                        <!-- ESTOQUE -->
+                        <td data-estoque="@item.Estoque">
+                            <span class="badge @(item.Estoque > 0 ? "bg-success" : "bg-danger")">
+                                @item.Estoque
+                            </span>
+                        </td>
+
+                        <!-- AÇÕES -->
+                        <td class="text-center">
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                        type="button"
+                                        data-bs-toggle="dropdown">
+                                    ⚙️
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                    <li>
+                                        <a class="dropdown-item"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.Id">
+                                            ✏️ Editar
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <button type="button"
+                                                class="dropdown-item text-warning"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#modalZerarEstoque"
+                                                data-id="@item.Id"
+                                                data-nome="@item.Nome"
+                                                data-estoque="@item.Estoque"
+                                                @(item.Estoque == 0 ? "disabled" : "")>
+                                            🔄 Zerar estoque (Ajuste)
+                                        </button>
+                                    </li>
+
+                                    <li><hr class="dropdown-divider" /></li>
+
+                                    @if (bloqueado)
+                                    {
+                                        <li>
+                                            <button type="button"
+                                                    class="dropdown-item text-muted"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Não é possível excluir. Estoque atual: @item.Estoque">
+                                                🔒 Excluir
+                                            </button>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li>
+                                            <a class="dropdown-item text-danger"
+                                               asp-action="Delete"
+                                               asp-route-id="@item.Id">
+                                                🗑️ Excluir
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            Nenhum produto cadastrado.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- MODAL ZERAR ESTOQUE -->
+<div class="modal fade" id="modalZerarEstoque" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="post" asp-action="ZerarEstoque">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-warning">🔄 Ajuste de Estoque</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="produtoId" />
+
+                    <p>
+                        Deseja zerar o estoque do produto:
+                        <strong id="produtoNome"></strong>
+                    </p>
+
+                    <div class="alert alert-warning">
+                        📦 Estoque atual:
+                        <strong><span id="produtoEstoque"></span></strong> unidade(s)
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="motivo" class="form-label fw-semibold">
+                            Motivo do ajuste <span class="text-danger">*</span>
+                        </label>
+                        <textarea class="form-control" id="motivo" name="motivo"
+                                  placeholder="Informe o motivo do zeramento" required
+                                  rows="3"></textarea>
+                        <span class="text-danger" id="motivoError"></span>
+                    </div>
+
+                    <small class="text-muted">
+                        Esta ação será registrada na auditoria.
+                    </small>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-warning">
+                        🔄 Confirmar ajuste
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PARA VISUALIZAR IMAGEM -->
+<div class="modal fade" id="modalImagem" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 bg-transparent">
+            <div class="modal-body p-0 text-center">
+                <img id="imgModal" src="" class="img-fluid rounded shadow" />
+            </div>
+            <div class="modal-footer justify-content-center border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // MODAL Zerar Estoque
+        const modal = document.getElementById('modalZerarEstoque');
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            document.getElementById('produtoId').value = button.dataset.id;
+            document.getElementById('produtoNome').textContent = button.dataset.nome;
+            document.getElementById('produtoEstoque').textContent = button.dataset.estoque;
+        });
+
+        // TOOLTIP
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(el => new bootstrap.Tooltip(el));
+
+        // ABRIR IMAGEM
+        function abrirFotoModal(src) {
+            const modalImg = document.getElementById('imgModal');
+            modalImg.src = src;
+            const modal = new bootstrap.Modal(document.getElementById('modalImagem'));
+            modal.show();
+        }
+
+        // ----------- FILTRO DE PRODUTOS -----------
+        const searchInput = document.getElementById('searchInput');
+        const estoqueFilter = document.getElementById('estoqueFilter');
+        const produtosTable = document.getElementById('produtosTable');
+        const tbody = produtosTable.querySelector('tbody');
+
+        function filtrarProdutos() {
+            const termo = searchInput.value.toLowerCase();
+            const filtroEstoque = estoqueFilter.value;
+
+            Array.from(tbody.rows).forEach(row => {
+                const nome = row.cells[1]?.textContent.toLowerCase() ?? '';
+                const estoque = parseInt(row.cells[3]?.dataset.estoque ?? '0');
+
+                let mostra = true;
+
+                if (termo && !nome.includes(termo)) mostra = false;
+                if (filtroEstoque === 'com' && estoque <= 0) mostra = false;
+                if (filtroEstoque === 'sem' && estoque > 0) mostra = false;
+
+                row.style.display = mostra ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filtrarProdutos);
+        estoqueFilter.addEventListener('change', filtrarProdutos);
+
+        window.limparFiltros = function() {
+            searchInput.value = '';
+            estoqueFilter.value = 'all';
+            filtrarProdutos();
+        };
+    </script>
+}

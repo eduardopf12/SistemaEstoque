@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Estoque</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="@RenderSection("BodyClass", required: false)">
+
+
+    <!-- ================= NAVBAR ================= -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+            <div class="container-fluid">
+
+                <!-- LOGO -->
+                <a class="navbar-brand fw-bold" asp-controller="Dashboard" asp-action="Index">
+                    📦 Estoque
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+
+                    <!-- MENU ESQUERDO -->
+                    <ul class="navbar-nav me-auto">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">
+                                    🏠 Dashboard
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Produtos" asp-action="Index">
+                                    📦 Produtos
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Movimentacoes" asp-action="Index">
+                                    🔄 Movimentações
+                                </a>
+                            </li>
+
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning"
+                                       asp-controller="Account"
+                                       asp-action="Index">
+                                        👥 Usuários
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-info"
+                                       asp-controller="Auditorias"
+                                       asp-action="Index">
+                                        📊 Auditoria
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary"
+                                       asp-controller="Backup"
+                                       asp-action="Index">
+                                        💾 Backup & Restauração
+                                    </a>
+                                </li>
+                            }
+                        }
+                    </ul>
+
+                    <!-- MENU DIREITO -->
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <!-- BOTÃO DARK MODE -->
+                            <li class="nav-item me-2">
+                                <button id="toggleTheme"
+                                        class="btn btn-sm btn-outline-light"
+                                        title="Alternar tema">
+                                    🌙
+                                </button>
+                            </li>
+
+                            <li class="nav-item">
+                                <span class="nav-link text-light">
+                                    👤 @User.Identity.Name
+                                </span>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-danger"
+                                   asp-controller="Account"
+                                   asp-action="Logout">
+                                    🔓 Sair
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Account"
+                                   asp-action="Login">
+                                    🔑 Login
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+    </header>
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme');
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+                document.body?.classList.add('dark-mode');
+            }
+        })();
+    </script>
+
+    <!-- ================= CONTEÚDO ================= -->
+    <div class="container mt-4">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer text-muted mt-5">
+        <div class="container text-center">
+            &copy; @DateTime.Now.Year - Sistema de Estoque
+        </div>
+    </footer>
+
+    <!-- ================= TOAST ================= -->
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <div id="appToast" class="toast" role="alert">
+            <div class="toast-header text-white">
+                <strong class="me-auto">Sistema</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body"></div>
+        </div>
+    </div>
+
+    <!-- ================= LOADER ================= -->
+    <div id="globalLoader"
+         class="d-none position-fixed top-0 start-0 w-100 h-100 bg-dark bg-opacity-50"
+         style="z-index:2000;">
+        <div class="spinner-border text-light position-absolute top-50 start-50"></div>
+    </div>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            /* ===== DARK MODE ===== */
+            const body = document.body;
+            const themeBtn = document.getElementById("toggleTheme");
+
+            if (localStorage.getItem("theme") === "dark") {
+                body.classList.add("dark-mode");
+                themeBtn.innerText = "☀️";
+            }
+
+            themeBtn.addEventListener("click", function () {
+                body.classList.toggle("dark-mode");
+
+                if (body.classList.contains("dark-mode")) {
+                    localStorage.setItem("theme", "dark");
+                    themeBtn.innerText = "☀️";
+                } else {
+                    localStorage.setItem("theme", "light");
+                    themeBtn.innerText = "🌙";
+                }
+            });
+
+            /* ===== TOAST ===== */
+            window.showToast = function (msg, tipo = "success") {
+                const toastEl = document.getElementById("appToast");
+                const header = toastEl.querySelector(".toast-header");
+                const bodyToast = toastEl.querySelector(".toast-body");
+
+                header.classList.remove("bg-success", "bg-danger", "bg-warning");
+                header.classList.add(
+                    tipo === "success" ? "bg-success" :
+                    tipo === "error" ? "bg-danger" : "bg-warning"
+                );
+
+                bodyToast.innerText = msg;
+                new bootstrap.Toast(toastEl).show();
+            };
+
+            /* ===== LOADER AO SALVAR ===== */
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", () => {
+                    document.getElementById("globalLoader").classList.remove("d-none");
+                });
+            });
+
+            /* ===== CTRL + S ===== */
+            document.addEventListener("keydown", function (e) {
+                if (e.ctrlKey && e.key === "s") {
+                    e.preventDefault();
+                    const form = document.querySelector("form");
+                    if (form) form.submit();
+                }
+            });
+
+        });
+    </script>
+    <script>
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(el => new bootstrap.Tooltip(el));
+    </script>
+
+    <script>
+        const ultimaPagina = localStorage.getItem("ultimaPagina");
+
+        if (ultimaPagina && ultimaPagina !== window.location.pathname) {
+            // opcional: só redirecionar ao entrar no sistema
+            console.log("Última página:", ultimaPagina);
+        }
+    </script>
+
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <script>showToast("@TempData["ToastSuccess"]","success");</script>
+    }
+    @if (TempData["ToastError"] != null)
+    {
+        <script>showToast("@TempData["ToastError"]","error");</script>
+    }
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

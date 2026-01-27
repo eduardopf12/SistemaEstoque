@@ -1,0 +1,229 @@
+﻿@model IEnumerable<Estoque.Models.Movimentacao>
+
+@{
+    ViewData["Title"] = "Movimentações de Estoque";
+}
+
+<!-- ================= TÍTULO ================= -->
+<div class="d-flex align-items-center mb-4">
+    <h2 class="fw-bold mb-0">🔄 Movimentações de Estoque</h2>
+    <button class="btn btn-sm btn-outline-secondary ms-2" data-bs-toggle="tooltip"
+            title="Aqui você acompanha todas as entradas e saídas de produtos do estoque, com data, setor, patrimônio e fotos.">
+        ❔
+    </button>
+</div>
+
+<!-- ================= FILTROS ================= -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row g-2">
+
+            <div class="col-md-4">
+                <input type="text"
+                       id="searchProduto"
+                       class="form-control"
+                       placeholder="🔍 Produto"
+                       autocomplete="off"
+                       data-bs-toggle="tooltip"
+                       title="Filtra pelo nome do produto" />
+            </div>
+
+            <div class="col-md-3">
+                <select id="tipoFilter"
+                        class="form-select"
+                        data-bs-toggle="tooltip"
+                        title="Filtra movimentações de entrada ou saída">
+                    <option value="">📦 Todos os tipos</option>
+                    <option value="Entrada">Entrada</option>
+                    <option value="Saida">Saída</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <input type="text"
+                       id="setorFilter"
+                       class="form-control"
+                       placeholder="🏢 Setor / Responsável"
+                       data-bs-toggle="tooltip"
+                       title="Filtra pelo setor ou responsável" />
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <a asp-action="Create"
+                   class="btn btn-primary"
+                   data-bs-toggle="tooltip"
+                   title="Registrar nova movimentação de estoque">
+                    ➕ Nova
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ================= TABELA ================= -->
+<div class="card shadow-sm">
+    <div style="overflow-x: visible;">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Produto</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Qtd</th>
+                    <th class="text-center">Foto</th>
+                    <th class="text-center">Patrimônio</th>
+                    <th>Setor</th>
+                    <th class="text-center">Data</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            📭 Nenhuma movimentação registrada.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Produto.Nome</td>
+                            <td class="text-center">
+                                <span class="badge @(item.Tipo == "Entrada" ? "bg-success" : "bg-danger")"
+                                      data-bs-toggle="tooltip"
+                                      title="Tipo da movimentação">
+                                    @item.Tipo
+                                </span>
+                            </td>
+                            <td class="text-center">@item.Quantidade</td>
+
+                            <!-- COLUNA FOTO COM PREVIEW -->
+                            <td class="text-center">
+                                <img src="@Url.Content(item.Produto.Foto != null ? "~/uploads/produtos/" + item.Produto.Foto : "~/images/no-image.png")"
+                                     class="img-thumbnail preview-img"
+                                     style="max-width:50px; max-height:50px; cursor:pointer;"
+                                     data-full="@Url.Content(item.Produto.Foto != null ? "~/uploads/produtos/" + item.Produto.Foto : "~/images/no-image.png")" />
+                            </td>
+
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="link-primary fw-semibold text-decoration-none">
+                                    🔎 @item.Patrimonio
+                                </a>
+                            </td>
+                            <td>@item.Setor</td>
+                            <td class="text-center">@item.Data.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                                            data-bs-toggle="dropdown"
+                                            title="Ações disponíveis">
+                                        ⚙️
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">
+                                                📄 Detalhes
+                                            </a>
+                                        </li>
+                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">✏️ Editar</a></li>
+                                        <li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@item.Id">🗑 Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ================= FOOTER AVISO ================= -->
+<div class="text-muted mt-3" data-bs-toggle="tooltip"
+     title="As movimentações impactam diretamente o saldo do estoque">
+    ⚠️ Atenção: Toda movimentação altera o estoque automaticamente.
+</div>
+
+<!-- ================= MODAL PREVIEW ================= -->
+<div class="modal fade" id="previewModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 bg-transparent">
+            <!-- Corpo do modal com a imagem -->
+            <div class="modal-body p-0 text-center">
+                <img id="previewImg" src="" class="img-fluid rounded shadow" style="max-height:500px;" />
+            </div>
+
+            <!-- Footer do modal com o botão Fechar -->
+            <div class="modal-footer justify-content-center border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
+
+    <script>
+        // ✅ Tooltips
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+            .forEach(el => new bootstrap.Tooltip(el));
+
+                function filtrarTudo() {
+            const produto = $("#searchProduto").val().toLowerCase();
+            const tipo = $("#tipoFilter").val();
+            const setor = $("#setorFilter").val().toLowerCase();
+
+            $("table tbody tr").each(function() {
+                const nome = $(this).find("td:first").text().toLowerCase();
+                const tipoRow = $(this).find("td:nth-child(2) span").text().trim(); // ✅ pegar apenas o texto
+                const setorRow = $(this).find("td:nth-child(6)").text().toLowerCase();
+
+                const exibir = (nome.includes(produto) || !produto)
+                            && (tipoRow == tipo || !tipo)
+                            && (setorRow.includes(setor) || !setor);
+
+                $(this).toggle(exibir);
+            });
+        }
+
+
+        $("#searchProduto, #tipoFilter, #setorFilter").on("input change", filtrarTudo);
+
+        // ✅ Autocomplete Produto
+        $("#searchProduto").autocomplete({
+            source: function(request, response) {
+                $.ajax({
+                    url: '@Url.Action("BuscarProdutos", "Produtos")',
+                    data: { term: request.term },
+                    success: function(data) {
+                        response(data);
+                    }
+                });
+            },
+            minLength: 1,
+            select: function(event, ui) {
+                $("#searchProduto").val(ui.item.label);
+                filtrarTudo();
+                return false;
+            }
+        });
+
+        // ✅ Preview de imagem
+        $(".preview-img").on("click", function() {
+            const fullSrc = $(this).data("full");
+            $("#previewImg").attr("src", fullSrc);
+            var modal = new bootstrap.Modal(document.getElementById("previewModal"));
+            modal.show();
+        });
+    </script>
+}
