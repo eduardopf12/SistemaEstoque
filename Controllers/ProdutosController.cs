@@ -16,8 +16,14 @@ namespace EstoqueWeb.Controllers
         }
 
         // 📊 REGISTRAR AUDITORIA DE PRODUTO
-        private void RegistrarAuditoriaProduto(Produto produto, string acao, string? motivo = null)
+        private void RegistrarAuditoriaProduto(
+    Produto produto,
+    string acao,
+    string? motivo = null
+)
         {
+            var fotoAuditoria = CopiarFotoParaAuditoria(produto.Foto);
+
             var auditoria = new Auditoria
             {
                 Usuario = User.Identity?.Name ?? "Sistema",
@@ -25,15 +31,21 @@ namespace EstoqueWeb.Controllers
                 Produto = produto.Nome,
                 Quantidade = produto.Estoque,
                 Tipo = "Produto",
-                Patrimonio = "",
-                Motivo = motivo ?? "",
+                Entidade = "Produto",
+                Patrimonio = "-",
+                Motivo = motivo,
                 Data = DateTime.Now,
-                Ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+                Ip = HttpContext.Connection.RemoteIpAddress?.ToString(),
+
+                // 🔥 IMAGEM HISTÓRICA
+                FotoAuditoria = fotoAuditoria
             };
 
             _context.Auditorias.Add(auditoria);
             _context.SaveChanges();
         }
+
+
 
         // 📋 LISTAGEM
         public IActionResult Index()
@@ -66,8 +78,8 @@ namespace EstoqueWeb.Controllers
                 var nomeArquivo = Guid.NewGuid() + Path.GetExtension(produto.FotoUpload.FileName);
                 var caminho = Path.Combine(pasta, nomeArquivo);
 
-                using (var stream = new FileStream(caminho, FileMode.Create))
-                    await produto.FotoUpload.CopyToAsync(stream);
+                using var stream = new FileStream(caminho, FileMode.Create);
+                await produto.FotoUpload.CopyToAsync(stream);
 
                 produto.Foto = nomeArquivo;
             }
@@ -76,29 +88,24 @@ namespace EstoqueWeb.Controllers
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
-            // 🧾 REGISTRA ATUALIZAÇÃO DO SISTEMA
-            
+            // 🧾 ATUALIZAÇÃO DO SISTEMA
             _context.AtualizacoesSistema.Add(new AtualizacaoSistema
             {
                 Titulo = "Produto cadastrado",
-                ProdutoNome = produto.Nome,          
-                Descricao = $"\nProduto '{produto.Nome}' foi criado no sistema.",
+                ProdutoNome = produto.Nome,
+                Descricao = $"Produto '{produto.Nome}' foi criado no sistema.",
                 Data = DateTime.Now,
-                Tipo = "produto"                     
+                Tipo = "Produto"
             });
-            
-
-            _context.SaveChanges();
-
 
             await _context.SaveChangesAsync();
 
             // 📊 AUDITORIA
             RegistrarAuditoriaProduto(produto, "CREATE");
 
+            TempData["Sucesso"] = $"Produto '{produto.Nome}' cadastrado com sucesso!";
             return RedirectToAction(nameof(Index));
         }
-
 
         // ✏️ EDIT GET
         public IActionResult Edit(int id)
@@ -109,6 +116,7 @@ namespace EstoqueWeb.Controllers
             return View(produto);
         }
 
+        // ✏️ EDIT POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Produto produto)
@@ -118,20 +126,19 @@ namespace EstoqueWeb.Controllers
 
             var estoqueAnterior = produtoDb.Estoque;
 
-            // Exige motivo apenas se o estoque está sendo zerado agora
+            // ⚠️ Exige motivo ao zerar estoque
             if (estoqueAnterior > 0 && produto.Estoque == 0 && string.IsNullOrWhiteSpace(produto.Motivo))
             {
                 ModelState.AddModelError("Motivo", "Informe o motivo ao zerar o estoque.");
                 return View(produto);
             }
 
-            // Atualiza dados
             produtoDb.Nome = produto.Nome;
             produtoDb.Descricao = produto.Descricao;
             produtoDb.Estoque = produto.Estoque;
             produtoDb.Quantidade = produto.Quantidade;
 
-            // 📸 Atualiza foto se houver upload
+            // 📸 Atualiza foto
             if (produto.FotoUpload != null && produto.FotoUpload.Length > 0)
             {
                 var pasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/produtos");
@@ -141,10 +148,9 @@ namespace EstoqueWeb.Controllers
                 var nomeArquivo = Guid.NewGuid() + Path.GetExtension(produto.FotoUpload.FileName);
                 var caminho = Path.Combine(pasta, nomeArquivo);
 
-                using (var stream = new FileStream(caminho, FileMode.Create))
-                    await produto.FotoUpload.CopyToAsync(stream);
+                using var stream = new FileStream(caminho, FileMode.Create);
+                await produto.FotoUpload.CopyToAsync(stream);
 
-                // Remove foto antiga
                 if (!string.IsNullOrEmpty(produtoDb.Foto))
                 {
                     var fotoAntiga = Path.Combine(pasta, produtoDb.Foto);
@@ -157,16 +163,15 @@ namespace EstoqueWeb.Controllers
 
             await _context.SaveChangesAsync();
 
-            RegistrarAuditoriaProduto(produtoDb, "EDIT", estoqueAnterior > 0 && produto.Estoque == 0 ? produto.Motivo : null);
+            RegistrarAuditoriaProduto(
+                produtoDb,
+                "EDIT",
+                estoqueAnterior > 0 && produto.Estoque == 0 ? produto.Motivo : null
+            );
 
             TempData["Sucesso"] = $"Produto '{produto.Nome}' atualizado com sucesso!";
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
 
         // 🗑️ DELETE
         public IActionResult Delete(int id)
@@ -175,17 +180,14 @@ namespace EstoqueWeb.Controllers
             if (produto == null)
                 return NotFound();
 
-            // ✅ Bloqueia exclusão se houver estoque
             if (produto.Estoque > 0)
             {
-                TempData["Erro"] = $"Não é possível excluir o produto '{produto.Nome}' porque ainda possui estoque ({produto.Estoque}).";
+                TempData["Erro"] = $"Não é possível excluir '{produto.Nome}' pois ainda possui estoque.";
                 return RedirectToAction(nameof(Index));
             }
 
-            // 📊 Registrar auditoria antes de excluir
             RegistrarAuditoriaProduto(produto, "DELETE");
 
-            // 🗑️ Remover foto se existir
             if (!string.IsNullOrEmpty(produto.Foto))
             {
                 var pasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/produtos");
@@ -197,12 +199,9 @@ namespace EstoqueWeb.Controllers
             _context.Produtos.Remove(produto);
             _context.SaveChanges();
 
-            // ✅ Mensagem de sucesso
             TempData["Sucesso"] = $"Produto '{produto.Nome}' excluído com sucesso!";
-
             return RedirectToAction(nameof(Index));
         }
-
 
         // 🖼️ REMOVER FOTO
         [HttpPost]
@@ -227,6 +226,8 @@ namespace EstoqueWeb.Controllers
 
             return RedirectToAction(nameof(Edit), new { id });
         }
+
+        // 🔻 ZERAR ESTOQUE
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ZerarEstoque(int id, string motivo)
@@ -241,31 +242,34 @@ namespace EstoqueWeb.Controllers
             if (produto == null) return NotFound();
 
             var estoqueAnterior = produto.Estoque;
-
             produto.Estoque = 0;
+
             await _context.SaveChangesAsync();
 
-            // 📊 REGISTRAR AUDITORIA COM MOTIVO
-            var auditoria = new Auditoria
+            _context.Auditorias.Add(new Auditoria
             {
                 Usuario = User.Identity?.Name ?? "Sistema",
                 Acao = "AJUSTE DE ESTOQUE",
                 Produto = produto.Nome,
                 Quantidade = estoqueAnterior,
                 Tipo = "Produto",
+                Entidade = "Produto",        // ✅ ESSENCIAL
                 Motivo = motivo,
                 Patrimonio = "-",
                 Data = DateTime.Now,
-                Ip = HttpContext.Connection.RemoteIpAddress?.ToString()
-            };
+                FotoAuditoria = CopiarFotoParaAuditoria(produto.Foto),
 
-            _context.Auditorias.Add(auditoria);
+                Ip = HttpContext.Connection.RemoteIpAddress?.ToString()
+            });
+
+
             await _context.SaveChangesAsync();
 
-            // ❌ Corrigido: volta para a lista de produtos, não para auditoria
             TempData["Sucesso"] = $"Estoque do produto '{produto.Nome}' zerado com sucesso!";
             return RedirectToAction(nameof(Index));
         }
+
+        // 🔍 AUTOCOMPLETE
         [HttpGet]
         public JsonResult BuscarProdutos(string term)
         {
@@ -276,6 +280,36 @@ namespace EstoqueWeb.Controllers
                 .ToList();
 
             return Json(produtos);
+        }
+        private string? CopiarFotoParaAuditoria(string? nomeFotoProduto)
+        {
+            if (string.IsNullOrEmpty(nomeFotoProduto))
+                return null;
+
+            var pastaProdutos = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/uploads/produtos"
+            );
+
+            var origem = Path.Combine(pastaProdutos, nomeFotoProduto);
+
+            if (!System.IO.File.Exists(origem))
+                return null;
+
+            var pastaAuditoria = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                "wwwroot/uploads/auditoria"
+            );
+
+            if (!Directory.Exists(pastaAuditoria))
+                Directory.CreateDirectory(pastaAuditoria);
+
+            var nomeAuditoria = $"{Guid.NewGuid()}_{nomeFotoProduto}";
+            var destino = Path.Combine(pastaAuditoria, nomeAuditoria);
+
+            System.IO.File.Copy(origem, destino, true);
+
+            return nomeAuditoria;
         }
 
     }

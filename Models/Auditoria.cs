@@ -14,5 +14,14 @@ namespace Estoque.Models
         public DateTime Data { get; set; }
         public string Ip { get; set; }
         public string? Motivo { get; set; }
+        public string Entidade { get; set; }
+
+        public string? Foto { get; set; }
+        public string? FotoAuditoria { get; set; }
+
+
+       
+
+
     }
 }

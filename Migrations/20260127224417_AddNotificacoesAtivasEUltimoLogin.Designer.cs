@@ -4,6 +4,7 @@ using Estoque.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estoque.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260127224417_AddNotificacoesAtivasEUltimoLogin")]
+    partial class AddNotificacoesAtivasEUltimoLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,6 +66,9 @@ namespace Estoque.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("NotificacoesAtivas")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Patrimonio")
                         .HasColumnType("longtext");
 
@@ -96,22 +102,6 @@ namespace Estoque.Migrations
 
                     b.Property<DateTime>("Data")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Entidade")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Foto")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FotoAntes")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FotoAuditoria")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FotoDepois")
-                        .HasColumnType("longtext");
 
                     b.Property<string>("Ip")
                         .IsRequired()
@@ -279,6 +269,9 @@ namespace Estoque.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<bool>("NotificacoesAtivas")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Perfil")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -305,8 +298,9 @@ namespace Estoque.Migrations
                             Ativo = true,
                             Email = "admin@admin.com",
                             Nome = "Administrador",
+                            NotificacoesAtivas = true,
                             Perfil = "Admin",
-                            Senha = "$2a$11$F3lXosn2RKiD9HB5UTSZ/umW/yTvh7IEQaaYkot3a72rzQo2t1vy."
+                            Senha = "$2a$11$6EO8rPonZw7spWxGiVhRv.uuGX0HeqSiiYoelMke9KhiPm2Owoflu"
                         });
                 });
 

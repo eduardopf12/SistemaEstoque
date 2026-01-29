@@ -30,5 +30,7 @@ namespace Estoque.Models
         public int EstoqueMinimo { get; set; } // novo campo
         public ICollection<Movimentacao>? Movimentacoes { get; set; }
         public string? Patrimonio { get; set; } // nullable, se alguns produtos não tiverem
+
+
     }
 }

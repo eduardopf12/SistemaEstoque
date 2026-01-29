@@ -23,4 +23,6 @@ public class AtualizacoesController : Controller
 
         return View(atualizacoes);
     }
+
+
 }

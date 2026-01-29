@@ -357,6 +357,15 @@ body.login-page .particle {
     position: fixed;
 }
 
-body:not(.login-page) .particle {
-    display: none;
+
+
+[data-bs-theme="dark"] .descricao-atualizacao {
+    background-color: #2b2f33;
+    color: #adb5bd;
 }
+
+[data-bs-theme="light"] .descricao-atualizacao {
+    background-color: #f8f9fa;
+    color: #6c757d;
+}
+

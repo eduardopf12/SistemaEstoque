@@ -169,7 +169,7 @@ namespace EstoqueWeb.Controllers
                     $"🔄 Movimentação de {mov.Tipo}\n" +
                     $"Produto: {produto.Nome}\n" +
                     $"Patrimônio: {mov.Patrimonio}\n" +
-                    $"Qtd: {mov.Quantidade}",
+                    $"Quantidade: {mov.Quantidade}",
 
                 Data = DateTime.Now,
                 Tipo = "movimentacao",

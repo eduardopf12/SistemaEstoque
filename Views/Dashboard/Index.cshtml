@@ -72,8 +72,11 @@
                     <!-- Descrição, se houver -->
                     @if (!string.IsNullOrEmpty(item.Descricao))
                     {
-                        <p class="text-muted mb-1">@item.Descricao</p>
+                        <p class="text-muted mb-1">
+                            @Html.Raw(item.Descricao.Replace("\n", "<br />"))
+                        </p>
                     }
+
 
                     <!-- Patrimônio e Data na mesma linha -->
                     <div class="text-secondary small d-flex justify-content-between">

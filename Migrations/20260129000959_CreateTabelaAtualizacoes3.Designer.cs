@@ -4,6 +4,7 @@ using Estoque.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Estoque.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260129000959_CreateTabelaAtualizacoes3")]
+    partial class CreateTabelaAtualizacoes3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -104,13 +107,7 @@ namespace Estoque.Migrations
                     b.Property<string>("Foto")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("FotoAntes")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("FotoAuditoria")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("FotoDepois")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Ip")
@@ -306,7 +303,7 @@ namespace Estoque.Migrations
                             Email = "admin@admin.com",
                             Nome = "Administrador",
                             Perfil = "Admin",
-                            Senha = "$2a$11$F3lXosn2RKiD9HB5UTSZ/umW/yTvh7IEQaaYkot3a72rzQo2t1vy."
+                            Senha = "$2a$11$.PaVlj8NRGdKO7OvQKxmX.Ga3QkgVvn/B9NF6pEq0EHRxWLatyVha"
                         });
                 });
 

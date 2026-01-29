@@ -7,68 +7,10 @@
 <!-- TÍTULO -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <!-- TÍTULO + AJUDA -->
-        <div class="d-flex align-items-center gap-2">
-            <h2 class="fw-bold mb-0">📊 Auditoria do Sistema</h2>
-
-            <button class="btn btn-sm btn-outline-secondary p-1"
-                    data-bs-toggle="tooltip"
-                    title="Aqui você verifica todo tipo de modificação feita pelo usuário.">
-                ❔
-            </button>
-        </div>
-
-        <!-- SUBTÍTULO -->
-        <span class="text-muted">
-            Registro de ações realizadas no sistema
-        </span>
+        <h2 class="fw-bold mb-0">📊 Auditoria do Sistema</h2>
+        <span class="text-muted">Registro de ações realizadas no sistema</span>
     </div>
 </div>
-
-
-<!-- FILTROS -->
-<form method="get" class="card border-0 shadow-sm mb-4">
-    <div class="card-body">
-        <div class="row g-2 align-items-end">
-
-            <div class="col-md-3">
-                <label class="form-label">👤 Usuário</label>
-                <input type="text"
-                       name="usuario"
-                       value="@ViewBag.Usuario"
-                       class="form-control"
-                       placeholder="Buscar usuário..." />
-            </div>
-
-            <div class="col-md-3">
-                <label class="form-label">⚙️ Ação</label>
-                <select name="acao" class="form-select">
-                    <option value="">Todas</option>
-                    <option value="CREATE" selected="@(ViewBag.Acao == "CREATE")">CREATE</option>
-                    <option value="EDIT" selected="@(ViewBag.Acao == "EDIT")">EDIT</option>
-                    <option value="DELETE" selected="@(ViewBag.Acao == "DELETE")">DELETE</option>
-                </select>
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label">📅 De</label>
-                <input type="date" name="dataInicio" class="form-control" />
-            </div>
-
-            <div class="col-md-2">
-                <label class="form-label">📅 Até</label>
-                <input type="date" name="dataFim" class="form-control" />
-            </div>
-
-            <div class="col-md-2">
-                <button class="btn btn-primary w-100">
-                    🔍 Filtrar
-                </button>
-            </div>
-
-        </div>
-    </div>
-</form>
 
 <!-- TABELA -->
 <div class="card border-0 shadow-sm">
@@ -106,26 +48,31 @@
                                             @(item.Acao == "CREATE" ? "bg-success" :
                                                                             item.Acao == "EDIT" ? "bg-warning text-dark" :
                                                                             item.Acao == "DELETE" ? "bg-danger" :
-                                                                            "bg-secondary")">
-                            @item.Acao
-                        </span>
-                    </td>
+                                                                                                    "bg-secondary")">
+                                    @item.Acao
+                                </span>
+                            </td>
 
+                            <td>@item.Entidade</td>
 
+                            <!-- BOTÃO VER -->
                             <td>
                                 <button class="btn btn-sm btn-outline-info"
                                         data-bs-toggle="modal"
                                         data-bs-target="#detalhesModal"
-                                        data-detalhes="@($"Produto: {item.Produto} | Tipo: {item.Tipo} | Quantidade: {item.Quantidade}")">
+                                        data-detalhes="Produto: @item.Produto | Tipo: @item.Tipo | Quantidade: @item.Quantidade | Patrimônio: @item.Patrimonio"
+                                        data-imagem="@item.FotoAuditoria">
                                     👁️ Ver
                                 </button>
+
+
                             </td>
 
                             <td class="fw-semibold text-danger">
                                 @item.Motivo
                             </td>
                         </tr>
-                                }
+                    }
                 }
                 else
                 {
@@ -140,56 +87,93 @@
     </div>
 </div>
 
-<!-- BOTÃO VOLTAR -->
-<div class="mt-4">
-    <a asp-controller="Dashboard"
-       asp-action="Index"
-       class="btn btn-secondary shadow-sm">
-        ⬅️ Voltar
-    </a>
-</div>
-
 <!-- MODAL DETALHES -->
 <div class="modal fade" id="detalhesModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
+
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">📄 Detalhes da Auditoria</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <ul class="list-group" id="modalDetalhesList">
-                    <!-- Detalhes serão preenchidos pelo JS -->
-                </ul>
+
+            <!-- CORPO DO MODAL -->
+            <div class="modal-body d-flex flex-column align-items-center">
+
+                <!-- IMAGEM -->
+                <div class="mb-3 w-100 text-center">
+                    <img id="modalImagem"
+                         class="img-fluid rounded shadow d-none"
+                         style="max-height:250px;"
+                         alt="Imagem do produto">
+                </div>
+
+                <!-- DETALHES -->
+                <ul class="list-group w-100" id="modalDetalhesList"></ul>
+
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+                    Fechar
+                </button>
             </div>
+
         </div>
     </div>
 </div>
 
+
 @section Scripts {
-    <script>
-        const modal = document.getElementById('detalhesModal');
-        const detalhesList = document.getElementById('modalDetalhesList');
+  
+<script>
+    const modal = document.getElementById('detalhesModal');
 
-               modal.addEventListener('show.bs.modal', function (event) {
-            const button = event.relatedTarget;
-            const detalhes = button.getAttribute('data-detalhes');
+    modal.addEventListener('show.bs.modal', function (event) {
 
-            detalhesList.innerHTML = '';
+        const button = event.relatedTarget;
+        if (!button) return;
 
-            const itens = detalhes.split('|');
-            itens.forEach(item => {
-                const partes = item.split(':');
+        const detalhes = button.dataset.detalhes;
+        const imagemNome = button.dataset.imagem;
+
+        const lista = document.getElementById('modalDetalhesList');
+        const img = document.getElementById('modalImagem');
+
+        // Limpa
+        lista.innerHTML = '';
+        img.classList.add('d-none');
+        img.src = '';
+
+        // Detalhes
+        if (detalhes) {
+            detalhes.split('|').forEach(item => {
+                const [k, v] = item.split(':');
                 const li = document.createElement('li');
                 li.className = 'list-group-item';
-                li.innerHTML = `<strong>${partes[0].trim()}:</strong> ${partes[1]?.trim() ?? ''}`;
-                detalhesList.appendChild(li);
+                li.innerHTML = `<strong>${k.trim()}:</strong> ${v?.trim() ?? ''}`;
+                lista.appendChild(li);
             });
-        });
+        }
 
-    </script>
+        // Imagem
+        if (imagemNome && imagemNome.trim() !== '') {
+                img.src = `/uploads/auditoria/${imagemNome}`;
+
+            img.classList.remove('d-none');
+
+            img.onerror = () => {
+                console.warn('Imagem não encontrada:', img.src);
+                img.classList.add('d-none');
+            };
+        }
+    });
+</script>
 }
 
+
+}
