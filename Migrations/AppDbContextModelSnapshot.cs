@@ -8,7 +8,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
+<<<<<<< HEAD
 namespace EstoqueProd.Migrations
+=======
+namespace Estoque.Migrations
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 {
     [DbContext(typeof(AppDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
@@ -104,9 +108,21 @@ namespace EstoqueProd.Migrations
                     b.Property<string>("Foto")
                         .HasColumnType("longtext");
 
+<<<<<<< HEAD
                     b.Property<string>("FotoAuditoria")
                         .HasColumnType("longtext");
 
+=======
+                    b.Property<string>("FotoAntes")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FotoAuditoria")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("FotoDepois")
+                        .HasColumnType("longtext");
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                     b.Property<string>("Ip")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -300,7 +316,11 @@ namespace EstoqueProd.Migrations
                             Email = "admin@admin.com",
                             Nome = "Administrador",
                             Perfil = "Admin",
+<<<<<<< HEAD
                             Senha = "$2a$11$iqnemr1P1zG6xv/Kfd5k4urvblE88BCQEpz93eZ2CvpSqF5ShlJMe"
+=======
+                            Senha = "$2a$11$F3lXosn2RKiD9HB5UTSZ/umW/yTvh7IEQaaYkot3a72rzQo2t1vy."
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                         });
                 });
 

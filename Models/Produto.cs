@@ -31,11 +31,14 @@ namespace Estoque.Models
         public ICollection<Movimentacao>? Movimentacoes { get; set; }
         public string? Patrimonio { get; set; } // nullable, se alguns produtos não tiverem
 
+<<<<<<< HEAD
         [NotMapped]
         public int QuantidadeDisponivel => Estoque - Quantidade;
 
 
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
     }
 }

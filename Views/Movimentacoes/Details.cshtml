@@ -18,7 +18,11 @@
 <div class="card shadow-sm mb-4">
     <div class="card-body">
 
+<<<<<<< HEAD
         <!-- Fotos do Produto -->
+=======
+        <!-- Fotos do Produto e da Movimentação -->
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
         <div class="row mb-3 text-center">
             <div class="col-md-6 mb-2">
                 <img src="@Url.Content(Model.Produto.Foto != null ? "~/uploads/produtos/" + Model.Produto.Foto : "~/images/no-image.png")"
@@ -27,7 +31,11 @@
                 <div class="mt-1"><strong>Produto</strong></div>
             </div>
             <div class="col-md-6 mb-2">
+<<<<<<< HEAD
                 <img src="@Url.Content(Model.Produto.Foto != null ? "~/uploads/produtos/" + Model.Produto.Foto : "~/images/no-image.png")"
+=======
+                <img src="@Url.Content(Model.Foto != null ? "~/uploads/movimentacoes/" + Model.Foto : "~/images/no-image.png")"
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                      class="img-fluid rounded"
                      style="max-height:200px;" />
                 <div class="mt-1"><strong>Movimentação</strong></div>
@@ -62,6 +70,7 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <!-- ================= ALERTA DE TRANSFERÊNCIA ================= -->
         @if (ViewBag.SetorAnterior != Model.Setor)
         {
@@ -78,6 +87,8 @@
             </div>
         }
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
     </div>
 </div>
 

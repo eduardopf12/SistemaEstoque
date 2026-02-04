@@ -173,6 +173,7 @@ namespace EstoqueWeb.Controllers
         }
 
         [HttpPost]
+<<<<<<< HEAD
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExcluirBackup(string fileName)
         {
@@ -200,11 +201,31 @@ namespace EstoqueWeb.Controllers
                     _context.BackupLogs.Remove(log);
                     await _context.SaveChangesAsync();
                 }
+=======
+        public IActionResult ExcluirBackup(string fileName)
+        {
+            try
+            {
+                string fullPath = Path.Combine(pastaBackup, fileName);
+
+                if (System.IO.File.Exists(fullPath))
+                    System.IO.File.Delete(fullPath);
+
+                _context.BackupLogs.Add(new BackupLog
+                {
+                    Acao = "Excluir Backup",
+                    Arquivo = fileName,
+                    Usuario = User.Identity!.Name!
+                });
+
+                _context.SaveChanges();
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
                 TempData["Mensagem"] = "Backup excluído com sucesso!";
             }
             catch (Exception ex)
             {
+<<<<<<< HEAD
                 TempData["Erro"] = "Erro ao excluir backup: " + ex.Message;
             }
 
@@ -213,5 +234,14 @@ namespace EstoqueWeb.Controllers
 
 
 
+=======
+                TempData["Erro"] = ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
+
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
     }
 }

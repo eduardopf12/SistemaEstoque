@@ -31,6 +31,7 @@
                         <span asp-validation-for="Descricao" class="text-danger"></span>
                     </div>
 
+<<<<<<< HEAD
                     <!-- ESTOQUE (FIXO) -->
                     <div class="mb-3">
                         <label asp-for="Estoque" class="form-label fw-semibold">Estoque</label>
@@ -44,6 +45,12 @@
                         <!-- Valor real enviado no POST -->
                         <input type="hidden" asp-for="Estoque" value="1" />
 
+=======
+                    <!-- ESTOQUE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Estoque</label>
+                        <input asp-for="Estoque" type="number" class="form-control" id="estoqueInput" />
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                         <span asp-validation-for="Estoque" class="text-danger"></span>
                     </div>
 

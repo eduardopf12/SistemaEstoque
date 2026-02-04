@@ -5,6 +5,7 @@
     <h2 class="fw-bold">➕ Nova Movimentação</h2>
     <span class="text-muted">Registrar entrada ou saída de produtos no estoque</span>
 </div>
+<<<<<<< HEAD
 @if (ViewBag.UsandoUltima != true)
 
 {
@@ -30,18 +31,25 @@
     </div>
 
 }
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
 <!-- CARD DO FORMULÁRIO -->
 <div class="row justify-content-center">
     <div class="col-md-6">
 
         <div class="card border-0 shadow-sm">
+<<<<<<< HEAD
             <div class="card-header fw-bold">
 
+=======
+            <div class="card-header bg-white fw-bold">
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                 📦 Dados da Movimentação
             </div>
 
             <div class="card-body">
+<<<<<<< HEAD
                 @if (ViewBag.UsandoUltima == true)
                 {
                     @if (ViewBag.UsandoUltima == true)
@@ -62,6 +70,8 @@
 
                 }
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                 <form asp-action="Create" method="post" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
 
@@ -84,6 +94,7 @@
 
                         <span asp-validation-for="ProdutoId" class="text-danger"></span>
                     </div>
+<<<<<<< HEAD
                     <!-- ESTOQUE DISPONÍVEL -->
                     <div class="mb-3">
                         <div id="estoqueInfo" class="alert alert-secondary py-2 d-none">
@@ -91,6 +102,8 @@
                             <span id="estoqueQuantidade">0</span> item(ns)
                         </div>
                     </div>
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
                     <!-- FOTO DO PRODUTO -->
                     <div class="mb-4">
@@ -121,6 +134,7 @@
                         <span asp-validation-for="Tipo" class="text-danger"></span>
                     </div>
 
+<<<<<<< HEAD
                     <!-- QUANTIDADE (FIXA) -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Quantidade</label>
@@ -142,6 +156,28 @@
                     </div>
 
 
+=======
+                    <!-- QUANTIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quantidade</label>
+                        <input asp-for="Quantidade"
+                               type="number"
+                               class="form-control"
+                               placeholder="Informe a quantidade" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- UNIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Unidade</label>
+                        <input asp-for="Unidade"
+                               type="text"
+                               class="form-control"
+                               placeholder="Ex: kg, litro, unidade" />
+                        <span asp-validation-for="Unidade" class="text-danger"></span>
+                    </div>
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                     <!-- SETOR RESPONSÁVEL -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Setor Responsável</label>
@@ -199,6 +235,7 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+<<<<<<< HEAD
         const produtoSelect = document.getElementById("produtoSelect");
         const estoqueInfo = document.getElementById("estoqueInfo");
         const estoqueQuantidade = document.getElementById("estoqueQuantidade");
@@ -210,11 +247,20 @@
             if (file) {
                 previewImagem.src = URL.createObjectURL(file);
                 previewImagem.style.display = "block";
+=======
+        function previewFoto(event) {
+            const img = document.getElementById("previewImagem");
+            const file = event.target.files[0];
+            if (file) {
+                img.src = URL.createObjectURL(file);
+                img.style.display = "block";
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             }
         }
 
         function abrirModal(src) {
             document.getElementById("fotoModalImg").src = src;
+<<<<<<< HEAD
             new bootstrap.Modal(document.getElementById("fotoModal")).show();
         }
 
@@ -265,9 +311,27 @@
             if (produtoSelect.value) {
                 atualizarImagemProduto();
                 atualizarQuantidadeDisponivel();
+=======
+            new bootstrap.Modal(document.getElementById('fotoModal')).show();
+        }
+
+            document.getElementById("produtoSelect").addEventListener("change", function () {
+            const option = this.options[this.selectedIndex];
+            const foto = option.getAttribute("data-foto");
+            const img = document.getElementById("previewImagem");
+
+            if (foto) {
+                img.src = `/uploads/produtos/${foto}`;
+                img.style.display = "block";
+            } else {
+                img.style.display = "none";
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             }
         });
     </script>
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a

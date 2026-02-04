@@ -10,4 +10,8 @@ namespace EstoqueWeb.Controllers
             return View();
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a

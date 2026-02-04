@@ -18,10 +18,13 @@ namespace Estoque.Data
         public DbSet<BackupLog> BackupLogs { get; set; }
         public DbSet<AtualizacaoSistema> AtualizacoesSistema { get; set; }
         public DbSet<AtualizacaoLida> AtualizacoesLidas { get; set; }
+<<<<<<< HEAD
        
 
 
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

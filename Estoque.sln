@@ -1,11 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
+<<<<<<< HEAD
 VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Estoque-Prod", "Estoque-Prod.csproj", "{510F97E0-B5BC-41FC-9100-6CF7F7404B9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Estoque-Test", "..\Estoque-Test\Estoque-Test.csproj", "{A9C8E6C8-9479-470F-8EE5-7C4FB291270C}"
+=======
+VisualStudioVersion = 17.14.36623.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Estoque", "Estoque.csproj", "{510F97E0-B5BC-41FC-9100-6CF7F7404B9F}"
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +23,13 @@ Global
 		{510F97E0-B5BC-41FC-9100-6CF7F7404B9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{510F97E0-B5BC-41FC-9100-6CF7F7404B9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{510F97E0-B5BC-41FC-9100-6CF7F7404B9F}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{A9C8E6C8-9479-470F-8EE5-7C4FB291270C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9C8E6C8-9479-470F-8EE5-7C4FB291270C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9C8E6C8-9479-470F-8EE5-7C4FB291270C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9C8E6C8-9479-470F-8EE5-7C4FB291270C}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

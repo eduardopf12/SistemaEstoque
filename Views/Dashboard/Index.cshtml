@@ -3,19 +3,35 @@
 @{
     ViewData["Title"] = "Dashboard";
 
+<<<<<<< HEAD
     var movs = ViewBag.UltimasMovimentacoes as List<Movimentacao> ?? new();
     var atualizacoes = ViewBag.Atualizacoes as List<AtualizacaoSistema> ?? new();
     var estoquePorProduto = ViewBag.EstoquePorProduto as IEnumerable<dynamic>;
+=======
+    var movs = ViewBag.UltimasMovimentacoes as List<Movimentacao>
+               ?? new List<Movimentacao>();
+
+    var atualizacoes = ViewBag.Atualizacoes as List<AtualizacaoSistema>
+                       ?? new List<AtualizacaoSistema>();
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
     DateTime? ultimoLogin = ViewBag.UltimoLogin as DateTime?;
     int contadorNovidades = ViewBag.ContadorNovidades ?? 0;
 }
 
+<<<<<<< HEAD
 <!-- ================= TÍTULO ================= -->
+=======
+<!-- TÍTULO -->
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold">
             📊 Dashboard de Estoque
+<<<<<<< HEAD
+=======
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             @if (contadorNovidades > 0)
             {
                 <span class="badge bg-danger ms-2">
@@ -23,10 +39,15 @@
                 </span>
             }
         </h2>
+<<<<<<< HEAD
+=======
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
         <span class="text-muted">Visão geral do seu controle de estoque</span>
     </div>
 </div>
 
+<<<<<<< HEAD
 <!-- ================= BOTÕES ================= -->
 <div class="mb-4 d-flex gap-2 flex-wrap">
     <a asp-controller="Dashboard" asp-action="Index" class="btn btn-dark shadow-sm">🏠 Dashboard</a>
@@ -41,29 +62,166 @@
             <div class="card-body">
                 <h6>📦 Total de Produtos</h6>
                 <h2>@ViewBag.TotalProdutos</h2>
+=======
+<div class="card-lateral-atualizacoes shadow">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>🔔 Novidades</span>
+        <button class="btn-close" onclick="fecharAtualizacoes()"></button>
+    </div>
+
+    <div class="card-body">
+        @if (ViewBag.Atualizacoes != null && ViewBag.Atualizacoes.Count > 0)
+        {
+            foreach (var item in ViewBag.Atualizacoes)
+            {
+                var ehNovo = (DateTime.Now - item.Data).TotalHours <= 24;
+
+                // 🪄 Ícone de acordo com o tipo de atualização
+                string icone = item.Tipo?.ToLower() switch
+                {
+                    "entrada" => "⬆️",
+                    "saida" => "⬇️",
+                    "estoque" => "📦",
+                    "movimentacao" => "🔄",
+                    "produto" => "📦", // Novo produto cadastrado
+                    _ => "⚙️"
+                };
+
+                <div class="mb-3 border-bottom pb-2 fade-in">
+                    <!-- Linha principal: ícone + título + badge -->
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <span class="fs-5">@Html.Raw(icone)</span>
+                            <span class="ms-2">@item.Titulo</span>
+                        </div>
+
+                        @if (ehNovo)
+                        {
+                            <span class="badge bg-danger ms-2">Novo</span>
+                        }
+                    </div>
+
+                    <!-- Descrição, se houver -->
+                    @if (!string.IsNullOrEmpty(item.Descricao))
+                    {
+                        <p class="text-muted mb-1">
+                            @Html.Raw(item.Descricao.Replace("\n", "<br />"))
+                        </p>
+                    }
+
+
+                    <!-- Patrimônio e Data na mesma linha -->
+                    <div class="text-secondary small d-flex justify-content-between">
+                        <span>
+                            @if (!string.IsNullOrEmpty(item.Patrimonio))
+                            {
+                                <p class="text-secondary small mb-1">🏷️ @item.Patrimonio</p>
+                               
+                              }
+                        </span>
+                        <span>🕓 @item.Data.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted">Nenhuma novidade.</p>
+        }
+    </div>
+
+    <div class="card-footer text-center">
+        <a asp-controller="Atualizacoes"
+           asp-action="Historico"
+           class="btn btn-sm btn-outline-primary w-100">
+            📌 Ver histórico completo
+        </a>
+    </div>
+</div>
+
+<script>
+    function fecharAtualizacoes() {
+        document.querySelector('.card-lateral-atualizacoes').style.display = 'none';
+    }
+</script>
+
+
+
+
+
+
+<!-- BOTÕES DE NAVEGAÇÃO -->
+<div class="mb-4 d-flex gap-2 flex-wrap">
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-dark shadow-sm">
+        🏠 Dashboard
+    </a>
+
+    <a asp-controller="Produtos" asp-action="Index" class="btn btn-primary shadow-sm">
+        📦 Produtos
+    </a>
+
+    <a asp-controller="Movimentacoes" asp-action="Index" class="btn btn-secondary shadow-sm">
+        🔄 Movimentações
+    </a>
+
+</div>
+
+<!-- INDICADORES -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100 bg-primary text-white">
+            <div class="card-body">
+                <h6 class="text-uppercase d-flex align-items-center">
+                    <span class="fs-3">📦</span>
+                    <span class="ms-2">Total de Produtos</span>
+                </h6>
+                <h2 class="fw-bold">@ViewBag.TotalProdutos</h2>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
+<<<<<<< HEAD
         <div class="card bg-success text-white shadow-sm h-100">
             <div class="card-body">
                 <h6>📊 Itens em Estoque</h6>
                 <h2>@ViewBag.TotalEstoque</h2>
+=======
+        <div class="card border-0 shadow-sm h-100 bg-success text-white">
+            <div class="card-body">
+                <h6 class="text-uppercase d-flex align-items-center">
+                    <span class="fs-3">📊</span>
+                    <span class="ms-2">Total em Estoque</span>
+                </h6>
+                <h2 class="fw-bold">@ViewBag.TotalEstoque</h2>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
+<<<<<<< HEAD
         <div class="card bg-info text-white shadow-sm h-100">
             <div class="card-body">
                 <h6>⬆️ Entradas Hoje</h6>
                 <h2>@ViewBag.EntradasHoje</h2>
+=======
+        <div class="card border-0 shadow-sm h-100 bg-info text-white">
+            <div class="card-body">
+                <h6 class="text-uppercase d-flex align-items-center">
+                    <span class="fs-3">⬆️</span>
+                    <span class="ms-2">Entradas Hoje</span>
+                </h6>
+                <h2 class="fw-bold">@ViewBag.EntradasHoje</h2>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             </div>
         </div>
     </div>
 
     <div class="col-md-3">
+<<<<<<< HEAD
         <div class="card bg-danger text-white shadow-sm h-100">
             <div class="card-body">
                 <h6>⬇️ Saídas Hoje</h6>
@@ -189,3 +347,114 @@
         </table>
     </div>
 </div>
+=======
+        <div class="card border-0 shadow-sm h-100 bg-danger text-white">
+            <div class="card-body">
+                <h6 class="text-uppercase d-flex align-items-center">
+                    <span class="fs-3">⬇️</span>
+                    <span class="ms-2">Saídas Hoje</span>
+                </h6>
+                <h2 class="fw-bold">@ViewBag.SaidasHoje</h2>
+            </div>
+        </div>
+    </div>
+
+
+    @if (ViewBag.ProdutosBaixoEstoque != null && ViewBag.ProdutosBaixoEstoque.Count > 0)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card border-warning rounded-3 shadow-sm">
+                    <div class="card-header bg-warning text-dark fw-bold d-flex justify-content-between align-items-center">
+                        ⚠️ Produtos com estoque baixo
+                        <span class="badge bg-dark">@ViewBag.ProdutosBaixoEstoque.Count</span>
+                    </div>
+
+                    <div class="card-body p-3">
+                        <table class="table table-sm table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Estoque</th>
+                                    <th>Estoque mínimo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var p in ViewBag.ProdutosBaixoEstoque)
+                                {
+                                    <tr class="table-warning">
+                                        <td class="fw-semibold">@p.Nome</td>
+                                        <td>@p.Estoque</td>
+                                        <td>@p.EstoqueMinimo</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <small class="text-muted d-block mt-2">
+                            Recomendado: Repor estoque o quanto antes.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- ÚLTIMAS MOVIMENTAÇÕES -->
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-bold">
+        🕒 Últimas Movimentações
+    </div>
+
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Produto</th>
+                        <th>Tipo</th>
+                        <th>Quantidade</th>
+                        <th>Setor / Responsável</th>
+                        <th>Patrimônio</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in movs)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@m.Produto?.Nome</td>
+                            <td>
+                                <span class="badge @(m.Tipo.ToLower() == "entrada" ? "bg-success" : "bg-danger")">
+                                    @m.Tipo
+                                </span>
+                            </td>
+                            <td>@m.Quantidade</td>
+                            <td>@m.Setor</td>
+                            <td>@m.Patrimonio</td>
+                            <td class="text-muted">
+                                @m.Data.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+                        </tr>
+                    }
+
+                    @if (!movs.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                Nenhuma movimentação registrada.
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function fecharAtualizacoes() {
+        document.querySelector('.card-lateral-atualizacoes').style.display = 'none';
+    }
+</script>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a

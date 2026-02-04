@@ -55,6 +55,7 @@
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     <!-- ESTOQUE (FIXO) -->
                     <div class="mb-3">
                         <label asp-for="Estoque" class="form-label fw-semibold">Estoque</label>
@@ -74,6 +75,15 @@
 
 
 
+=======
+                    <!-- ESTOQUE INICIAL -->
+                    <div class="mb-3">
+                        <label asp-for="Estoque" class="form-label fw-semibold"></label>
+                        <input asp-for="Estoque" type="number" class="form-control" value="0" />
+                        <span asp-validation-for="Estoque" class="text-danger"></span>
+                    </div>
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                     <!-- QUANTIDADE -->
                     <div class="mb-4">
                         <label asp-for="Quantidade" class="form-label fw-semibold"></label>
@@ -112,5 +122,8 @@
             }
         }
     </script>
+<<<<<<< HEAD
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 }

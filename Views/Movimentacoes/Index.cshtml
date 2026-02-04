@@ -18,7 +18,11 @@
     <div class="card-body">
         <div class="row g-2">
 
+<<<<<<< HEAD
             <div class="col-md-3">
+=======
+            <div class="col-md-4">
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                 <input type="text"
                        id="searchProduto"
                        class="form-control"
@@ -28,7 +32,11 @@
                        title="Filtra pelo nome do produto" />
             </div>
 
+<<<<<<< HEAD
             <div class="col-md-2">
+=======
+            <div class="col-md-3">
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                 <select id="tipoFilter"
                         class="form-select"
                         data-bs-toggle="tooltip"
@@ -48,6 +56,7 @@
                        title="Filtra pelo setor ou responsável" />
             </div>
 
+<<<<<<< HEAD
             <div class="col-md-2">
                 <input type="text"
                        id="searchPatrimonio"
@@ -57,6 +66,8 @@
                        title="Filtra pelo número do patrimônio" />
             </div>
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             <div class="col-md-2 d-grid">
                 <a asp-action="Create"
                    class="btn btn-primary"
@@ -101,7 +112,11 @@
                     foreach (var item in Model)
                     {
                         <tr>
+<<<<<<< HEAD
                             <td>@(item.Produto?.Nome ?? "[Produto não informado]")</td>
+=======
+                            <td>@item.Produto.Nome</td>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                             <td class="text-center">
                                 <span class="badge @(item.Tipo == "Entrada" ? "bg-success" : "bg-danger")"
                                       data-bs-toggle="tooltip"
@@ -113,6 +128,7 @@
 
                             <!-- COLUNA FOTO COM PREVIEW -->
                             <td class="text-center">
+<<<<<<< HEAD
                                 <img src="@Url.Content(item.Produto?.Foto != null ? "~/uploads/produtos/" + item.Produto.Foto : "~/images/no-image.png")"
                                      class="img-thumbnail preview-img"
                                      style="max-width:50px; max-height:50px; cursor:pointer;"
@@ -133,6 +149,20 @@
                             </td>
 
                             <td>@(item.Setor ?? "[Não informado]")</td>
+=======
+                                <img src="@Url.Content(item.Produto.Foto != null ? "~/uploads/produtos/" + item.Produto.Foto : "~/images/no-image.png")"
+                                     class="img-thumbnail preview-img"
+                                     style="max-width:50px; max-height:50px; cursor:pointer;"
+                                     data-full="@Url.Content(item.Produto.Foto != null ? "~/uploads/produtos/" + item.Produto.Foto : "~/images/no-image.png")" />
+                            </td>
+
+                            <td class="text-center">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="link-primary fw-semibold text-decoration-none">
+                                    🔎 @item.Patrimonio
+                                </a>
+                            </td>
+                            <td>@item.Setor</td>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                             <td class="text-center">@item.Data.ToString("dd/MM/yyyy")</td>
                             <td class="text-center">
                                 <div class="dropdown">
@@ -142,6 +172,7 @@
                                         ⚙️
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end">
+<<<<<<< HEAD
                                         @if (item.Id != 0)
                                         {
                                             <li>
@@ -156,6 +187,15 @@
                                         {
                                             <li><span class="dropdown-item text-muted">Sem ações disponíveis</span></li>
                                         }
+=======
+                                        <li>
+                                            <a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id">
+                                                📄 Detalhes
+                                            </a>
+                                        </li>
+                                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id">✏️ Editar</a></li>
+                                        <li><a class="dropdown-item text-danger" asp-action="Delete" asp-route-id="@item.Id">🗑 Excluir</a></li>
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
                                     </ul>
                                 </div>
                             </td>
@@ -163,7 +203,10 @@
                     }
                 }
             </tbody>
+<<<<<<< HEAD
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
         </table>
     </div>
 </div>
@@ -178,9 +221,18 @@
 <div class="modal fade" id="previewModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 bg-transparent">
+<<<<<<< HEAD
             <div class="modal-body p-0 text-center">
                 <img id="previewImg" src="" class="img-fluid rounded shadow" style="max-height:500px;" />
             </div>
+=======
+            <!-- Corpo do modal com a imagem -->
+            <div class="modal-body p-0 text-center">
+                <img id="previewImg" src="" class="img-fluid rounded shadow" style="max-height:500px;" />
+            </div>
+
+            <!-- Footer do modal com o botão Fechar -->
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             <div class="modal-footer justify-content-center border-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     Fechar
@@ -190,6 +242,10 @@
     </div>
 </div>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 @section Scripts {
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css" />
@@ -199,6 +255,7 @@
         document.querySelectorAll('[data-bs-toggle="tooltip"]')
             .forEach(el => new bootstrap.Tooltip(el));
 
+<<<<<<< HEAD
         // ✅ Função de filtragem
         function filtrarTudo() {
             const produto = $("#searchProduto").val().toLowerCase();
@@ -216,13 +273,33 @@
                             && (tipoRow == tipo || !tipo)
                             && (setorRow.includes(setor) || !setor)
                             && (patrimonioRow.includes(patrimonio) || !patrimonio);
+=======
+                function filtrarTudo() {
+            const produto = $("#searchProduto").val().toLowerCase();
+            const tipo = $("#tipoFilter").val();
+            const setor = $("#setorFilter").val().toLowerCase();
+
+            $("table tbody tr").each(function() {
+                const nome = $(this).find("td:first").text().toLowerCase();
+                const tipoRow = $(this).find("td:nth-child(2) span").text().trim(); // ✅ pegar apenas o texto
+                const setorRow = $(this).find("td:nth-child(6)").text().toLowerCase();
+
+                const exibir = (nome.includes(produto) || !produto)
+                            && (tipoRow == tipo || !tipo)
+                            && (setorRow.includes(setor) || !setor);
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
                 $(this).toggle(exibir);
             });
         }
 
+<<<<<<< HEAD
         // ✅ Bind dos filtros
         $("#searchProduto, #tipoFilter, #setorFilter, #searchPatrimonio").on("input change", filtrarTudo);
+=======
+
+        $("#searchProduto, #tipoFilter, #setorFilter").on("input change", filtrarTudo);
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
         // ✅ Autocomplete Produto
         $("#searchProduto").autocomplete({

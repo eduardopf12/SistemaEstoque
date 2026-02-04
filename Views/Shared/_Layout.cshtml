@@ -49,9 +49,12 @@
                                 </a>
                             </li>
 
+<<<<<<< HEAD
                           
 
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
 
                             @if (User.IsInRole("Admin"))
                             {
@@ -244,17 +247,28 @@
         }
     </script>
 
+<<<<<<< HEAD
     @if (User.Identity.IsAuthenticated && TempData["ToastSuccess"] != null)
     {
         <script>showToast("@TempData["ToastSuccess"]","success");</script>
     }
 
     @if (User.Identity.IsAuthenticated && TempData["ToastError"] != null)
+=======
+    @if (TempData["ToastSuccess"] != null)
+    {
+        <script>showToast("@TempData["ToastSuccess"]","success");</script>
+    }
+    @if (TempData["ToastError"] != null)
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
     {
         <script>showToast("@TempData["ToastError"]","error");</script>
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
     @await RenderSectionAsync("Scripts", required: false)
 
 </body>

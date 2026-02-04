@@ -154,7 +154,11 @@ namespace Estoque.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
                 return RedirectToAction("Index", "Dashboard");
+<<<<<<< HEAD
             TempData.Clear();
+=======
+
+>>>>>>> eda043ff277b28cbfa62995ac8b7c7925158a77a
             return View();
         }
 
