@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Auditoria>
+
+<h3 class="fw-bold mb-3">
+    📜 Histórico do Produto: @ViewBag.Produto
+</h3>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Data</th>
+                    <th>Ação</th>
+                    <th>Quantidade</th>
+                    <th>Usuário</th>
+                    <th>Motivo</th>
+                    <th>IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge bg-warning text-dark">
+                                @item.Acao
+                            </span>
+                        </td>
+                        <td>@item.Quantidade</td>
+                        <td>@item.Usuario</td>
+                        <td>@item.Motivo</td>
+                        <td>@item.Ip</td>
+                    </tr>
+                }
+
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            Nenhum registro encontrado.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<a asp-action="Index"
+   asp-controller="Auditorias"
+   class="btn btn-secondary mt-3">
+    ⬅️ Voltar
+</a>

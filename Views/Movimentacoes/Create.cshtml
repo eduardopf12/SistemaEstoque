@@ -1,0 +1,273 @@
+﻿@model Estoque.Models.Movimentacao
+
+<!-- TÍTULO -->
+<div class="mb-4">
+    <h2 class="fw-bold">➕ Nova Movimentação</h2>
+    <span class="text-muted">Registrar entrada ou saída de produtos no estoque</span>
+</div>
+@if (ViewBag.UsandoUltima != true)
+
+{
+
+    <div class="mb-4">
+        <div class="card border-0 shadow-sm reutilizar-card">
+
+            <div class="card-body d-flex align-items-center justify-content-between">
+                <div>
+                    <h6 class="mb-1 fw-bold">🔁 Reutilizar última movimentação</h6>
+                    <small class="text-auto-muted">
+                        Produto, tipo, quantidade, unidade e setor serão preenchidos automaticamente.
+                    </small>
+                </div>
+
+                <a asp-action="Create"
+                   asp-route-usarUltima="true"
+                   class="btn btn-outline-primary fw-semibold">
+                    ⚡ Usar última
+                </a>
+            </div>
+        </div>
+    </div>
+
+}
+
+<!-- CARD DO FORMULÁRIO -->
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header fw-bold">
+
+                📦 Dados da Movimentação
+            </div>
+
+            <div class="card-body">
+                @if (ViewBag.UsandoUltima == true)
+                {
+                    @if (ViewBag.UsandoUltima == true)
+                    {
+                        <div class="alert alert-info d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>ℹ️ Última movimentação aplicada</strong><br />
+                                <small>
+                                    Dados reaproveitados. Informe apenas o novo patrimônio (se necessário).
+                                </small>
+                            </div>
+
+                            <a asp-action="Create" class="btn btn-sm btn-outline-dark">
+                                ❌ Limpar
+                            </a>
+                        </div>
+                    }
+
+                }
+
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <!-- PRODUTO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Produto</label>
+                        <select asp-for="ProdutoId"
+                                class="form-select"
+                                id="produtoSelect">
+                            <option value="">Selecione um produto</option>
+
+                            @foreach (var p in ViewBag.Produtos)
+                            {
+                                <option value="@p.Id"
+                                        data-foto="@p.Foto">
+                                    @p.Nome
+                                </option>
+                            }
+                        </select>
+
+                        <span asp-validation-for="ProdutoId" class="text-danger"></span>
+                    </div>
+                    <!-- ESTOQUE DISPONÍVEL -->
+                    <div class="mb-3">
+                        <div id="estoqueInfo" class="alert alert-secondary py-2 d-none">
+                            📊 <strong>Disponível em estoque:</strong>
+                            <span id="estoqueQuantidade">0</span> item(ns)
+                        </div>
+                    </div>
+
+                    <!-- FOTO DO PRODUTO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Foto da Movimentação (opcional)</label>
+                        <input type="file"
+                               asp-for="FotoUpload"
+                               class="form-control"
+                               accept="image/*"
+                               onchange="previewFoto(event)" />
+
+                        <div class="mt-3 text-center">
+                            <img id="previewImagem"
+                                 src="~/images/no-image.png"
+                                 class="img-thumbnail"
+                                 style="max-width:200px; display:none; cursor:pointer;"
+                                 onclick="abrirModal(this.src)" />
+                        </div>
+                    </div>
+
+                    <!-- TIPO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Tipo</label>
+                        <select asp-for="Tipo" class="form-select">
+                            <option value="">Selecione o tipo</option>
+                            <option value="Entrada">⬆️ Entrada</option>
+                            <option value="Saida">⬇️ Saída</option>
+                        </select>
+                        <span asp-validation-for="Tipo" class="text-danger"></span>
+                    </div>
+
+                    <!-- QUANTIDADE (FIXA) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quantidade</label>
+                        <input type="text"
+                               class="form-control"
+                               value="1"
+                               readonly />
+                        <input type="hidden" asp-for="Quantidade" value="1" />
+                    </div>
+
+                    <!-- UNIDADE (FIXA) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Unidade</label>
+                        <input type="text"
+                               class="form-control"
+                               value="1"
+                               readonly />
+                        <input type="hidden" asp-for="Unidade" value="UN" />
+                    </div>
+
+
+                    <!-- SETOR RESPONSÁVEL -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Setor Responsável</label>
+                        <input asp-for="Setor"
+                               type="text"
+                               class="form-control"
+                               placeholder="Informe o setor responsável" />
+                        <span asp-validation-for="Setor" class="text-danger"></span>
+                    </div>
+
+                    <!-- PATRIMÔNIO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Patrimônio (opcional)</label>
+                        <input asp-for="Patrimonio"
+                               type="text"
+                               class="form-control"
+                               placeholder="Número do patrimônio" />
+                        <span asp-validation-for="Patrimonio" class="text-danger"></span>
+                    </div>
+
+                    <!-- AÇÕES -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">
+                            ⬅️ Voltar
+                        </a>
+
+                        <button type="submit" class="btn btn-success shadow-sm">
+                            💾 Salvar Movimentação
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- VALIDAÇÃO -->
+        <div class="text-danger mt-3">
+            @Html.ValidationSummary()
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="fotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body text-center p-3">
+                <img id="fotoModalImg" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const produtoSelect = document.getElementById("produtoSelect");
+        const estoqueInfo = document.getElementById("estoqueInfo");
+        const estoqueQuantidade = document.getElementById("estoqueQuantidade");
+        const previewImagem = document.getElementById("previewImagem");
+
+        /* FOTO UPLOAD */
+        function previewFoto(event) {
+            const file = event.target.files[0];
+            if (file) {
+                previewImagem.src = URL.createObjectURL(file);
+                previewImagem.style.display = "block";
+            }
+        }
+
+        function abrirModal(src) {
+            document.getElementById("fotoModalImg").src = src;
+            new bootstrap.Modal(document.getElementById("fotoModal")).show();
+        }
+
+        /* FOTO DO PRODUTO */
+        function atualizarImagemProduto() {
+            const option = produtoSelect.options[produtoSelect.selectedIndex];
+            const foto = option.getAttribute("data-foto");
+
+            if (foto) {
+                previewImagem.src = `/uploads/produtos/${foto}`;
+                previewImagem.style.display = "block";
+            } else {
+                previewImagem.style.display = "none";
+            }
+        }
+
+        /* QUANTIDADE DISPONÍVEL */
+        async function atualizarQuantidadeDisponivel() {
+            const produtoId = produtoSelect.value;
+
+            if (!produtoId) {
+                estoqueInfo.classList.add("d-none");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/Movimentacoes/ObterQuantidadeDisponivel?produtoId=${produtoId}`);
+                const quantidade = await response.json();
+
+                estoqueQuantidade.innerText = quantidade;
+                estoqueInfo.classList.remove("d-none");
+
+                estoqueInfo.classList.remove("alert-danger", "alert-secondary");
+                estoqueInfo.classList.add(quantidade === 0 ? "alert-danger" : "alert-secondary");
+            } catch {
+                estoqueInfo.classList.add("d-none");
+            }
+        }
+
+        /* EVENTOS */
+        produtoSelect.addEventListener("change", () => {
+            atualizarImagemProduto();
+            atualizarQuantidadeDisponivel();
+        });
+
+        /* REUTILIZAR ÚLTIMA */
+        window.addEventListener("DOMContentLoaded", () => {
+            if (produtoSelect.value) {
+                atualizarImagemProduto();
+                atualizarQuantidadeDisponivel();
+            }
+        });
+    </script>
+}
+
+

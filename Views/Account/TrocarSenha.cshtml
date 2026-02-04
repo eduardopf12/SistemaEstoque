@@ -1,0 +1,25 @@
+﻿@model TrocarSenhaViewModel
+
+<h2>🔑 Alterar senha obrigatória</h2>
+
+<form asp-action="TrocarSenha" method="post">
+    <input type="hidden" asp-for="UsuarioId" />
+
+    <div class="mb-3">
+        <label class="form-label">Nova Senha</label>
+        <input asp-for="NovaSenha" type="password" class="form-control" />
+        <span asp-validation-for="NovaSenha" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Confirmar Senha</label>
+        <input asp-for="ConfirmarSenha" type="password" class="form-control" />
+        <span asp-validation-for="ConfirmarSenha" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

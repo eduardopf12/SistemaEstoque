@@ -1,0 +1,14 @@
+﻿@model Estoque.Models.Usuario
+
+<h2 class="text-danger">🗑️ Excluir Usuário</h2>
+
+<div class="alert alert-warning">
+    Tem certeza que deseja excluir o usuário <strong>@Model.Nome</strong>?
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Excluir</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

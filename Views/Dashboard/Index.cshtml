@@ -1,0 +1,191 @@
+﻿@using Estoque.Models
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var movs = ViewBag.UltimasMovimentacoes as List<Movimentacao> ?? new();
+    var atualizacoes = ViewBag.Atualizacoes as List<AtualizacaoSistema> ?? new();
+    var estoquePorProduto = ViewBag.EstoquePorProduto as IEnumerable<dynamic>;
+
+    DateTime? ultimoLogin = ViewBag.UltimoLogin as DateTime?;
+    int contadorNovidades = ViewBag.ContadorNovidades ?? 0;
+}
+
+<!-- ================= TÍTULO ================= -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">
+            📊 Dashboard de Estoque
+            @if (contadorNovidades > 0)
+            {
+                <span class="badge bg-danger ms-2">
+                    🔔 @contadorNovidades novidades novas
+                </span>
+            }
+        </h2>
+        <span class="text-muted">Visão geral do seu controle de estoque</span>
+    </div>
+</div>
+
+<!-- ================= BOTÕES ================= -->
+<div class="mb-4 d-flex gap-2 flex-wrap">
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-dark shadow-sm">🏠 Dashboard</a>
+    <a asp-controller="Produtos" asp-action="Index" class="btn btn-primary shadow-sm">📦 Produtos</a>
+    <a asp-controller="Movimentacoes" asp-action="Index" class="btn btn-secondary shadow-sm">🔄 Movimentações</a>
+</div>
+
+<!-- ================= INDICADORES ================= -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6>📦 Total de Produtos</h6>
+                <h2>@ViewBag.TotalProdutos</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6>📊 Itens em Estoque</h6>
+                <h2>@ViewBag.TotalEstoque</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-info text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6>⬆️ Entradas Hoje</h6>
+                <h2>@ViewBag.EntradasHoje</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-danger text-white shadow-sm h-100">
+            <div class="card-body">
+                <h6>⬇️ Saídas Hoje</h6>
+                <h2>@ViewBag.SaidasHoje</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= ESTOQUE POR PRODUTO ================= -->
+@if (estoquePorProduto != null && estoquePorProduto.Any())
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header fw-bold">📦 Estoque disponível por produto</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade disponível</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in estoquePorProduto)
+                            {
+                                <tr>
+                                    <td>@item.Nome</td>
+                                    <td>
+                                        <span class="badge bg-success fs-6">
+                                            @item.QuantidadeDisponivel
+
+
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ================= PRODUTOS COM ESTOQUE BAIXO ================= -->
+@if (ViewBag.ProdutosBaixoEstoque != null && ViewBag.ProdutosBaixoEstoque.Count > 0)
+{
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-warning shadow-sm">
+                <div class="card-header bg-warning fw-bold">
+                    ⚠️ Produtos com estoque baixo
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Estoque</th>
+                                <th>Mínimo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in ViewBag.ProdutosBaixoEstoque)
+                            {
+                                <tr class="table-warning">
+                                    <td>@p.Nome</td>
+                                    <td>@p.Estoque</td>
+                                    <td>@p.EstoqueMinimo</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- ================= ÚLTIMAS MOVIMENTAÇÕES ================= -->
+<div class="card shadow-sm">
+    <div class="card-header fw-bold">🕒 Últimas Movimentações</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Produto</th>
+                    <th>Tipo</th>
+                    <th>Qtd</th>
+                    <th>Setor</th>
+                    <th>Patrimônio</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in movs)
+                {
+                    <tr>
+                        <td>@m.Produto?.Nome</td>
+                        <td>
+                            <span class="badge @(m.Tipo == "entrada" ? "bg-success" : "bg-danger")">
+                                @m.Tipo
+                            </span>
+                        </td>
+                        <td>@m.Quantidade</td>
+                        <td>@m.Setor</td>
+                        <td>@m.Patrimonio</td>
+                        <td>@m.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                    </tr>
+                }
+
+                @if (!movs.Any())
+                {
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-3">
+                            Nenhuma movimentação registrada
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

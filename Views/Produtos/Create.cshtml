@@ -1,0 +1,116 @@
+﻿@model Estoque.Models.Produto
+
+@{
+    ViewData["Title"] = "Cadastrar Produto";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">📦 Cadastrar Produto</h2>
+    <span class="text-muted">Informe os dados do novo produto</span>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                📝 Dados do Produto
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Create" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+
+                    <!-- NOME -->
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label fw-semibold"></label>
+                        <input asp-for="Nome" class="form-control" placeholder="Nome do produto" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIÇÃO -->
+                    <div class="mb-3">
+                        <label asp-for="Descricao" class="form-label fw-semibold"></label>
+                        <textarea asp-for="Descricao"
+                                  class="form-control"
+                                  rows="3"
+                                  placeholder="Descrição do produto (opcional)"></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+
+                    <!-- FOTO -->
+                    <div class="mb-4">
+                        <label asp-for="FotoUpload" class="form-label fw-semibold"></label>
+                        <input asp-for="FotoUpload"
+                               type="file"
+                               class="form-control"
+                               accept="image/*"
+                               onchange="previewFoto(this)" />
+                        <span asp-validation-for="FotoUpload" class="text-danger"></span>
+
+                        <div class="mt-3 text-center">
+                            <img id="previewImagem"
+                                 class="img-thumbnail shadow-sm"
+                                 style="max-width:200px; display:none;" />
+                        </div>
+                    </div>
+
+                    <!-- ESTOQUE (FIXO) -->
+                    <div class="mb-3">
+                        <label asp-for="Estoque" class="form-label fw-semibold">Estoque</label>
+
+                        <!-- Apenas visual -->
+                        <input type="text"
+                               class="form-control"
+                               value="1"
+                               readonly />
+
+                        <!-- Valor real enviado no POST -->
+                        <input type="hidden" asp-for="Estoque" value="1" />
+
+                        <span asp-validation-for="Estoque" class="text-danger"></span>
+                    </div>
+
+
+
+
+                    <!-- QUANTIDADE -->
+                    <div class="mb-4">
+                        <label asp-for="Quantidade" class="form-label fw-semibold"></label>
+                        <input asp-for="Quantidade" type="number" class="form-control" value="0" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- AÇÕES -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">⬅️ Voltar</a>
+                        <button type="submit" class="btn btn-success shadow-sm">💾 Salvar Produto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        function previewFoto(input) {
+            const img = document.getElementById("previewImagem");
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                img.src = "";
+                img.style.display = "none";
+            }
+        }
+    </script>
+
+}

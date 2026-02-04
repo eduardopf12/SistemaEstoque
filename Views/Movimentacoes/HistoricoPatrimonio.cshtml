@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Estoque.Models.Movimentacao>
+
+<h2 class="fw-bold mb-3">
+    📦 Histórico do Patrimônio: @ViewBag.Patrimonio
+</h2>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Data</th>
+                    <th>Tipo</th>
+                    <th>Produto</th>
+                    <th>Qtd</th>
+                    <th>Setor</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge @(item.Tipo == "Entrada" ? "bg-success" : "bg-danger")">
+                                @item.Tipo
+                            </span>
+                        </td>
+                        <td>@item.Produto.Nome</td>
+                        <td>@item.Quantidade</td>
+                        <td>@item.Setor</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+       
+    </div>
+  
+</div>
+
+<!-- AÇÕES -->
+<div class="d-flex justify-content-start mt-3">
+    <a asp-action="Index" class="btn btn-secondary">
+        ⬅️ Voltar
+    </a>
+</div>

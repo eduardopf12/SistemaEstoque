@@ -1,0 +1,144 @@
+﻿@model Estoque.Models.Produto
+
+<div class="mb-4">
+    <h2 class="fw-bold">✏️ Editar Produto</h2>
+    <span class="text-muted">Atualize as informações do produto</span>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-bold">
+                📦 Dados do Produto
+            </div>
+
+            <div class="card-body">
+                <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+
+                    <!-- NOME -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+
+                    <!-- DESCRIÇÃO -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Descrição</label>
+                        <textarea asp-for="Descricao" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+
+                    <!-- ESTOQUE (FIXO) -->
+                    <div class="mb-3">
+                        <label asp-for="Estoque" class="form-label fw-semibold">Estoque</label>
+
+                        <!-- Apenas visual -->
+                        <input type="text"
+                               class="form-control"
+                               value="1"
+                               readonly />
+
+                        <!-- Valor real enviado no POST -->
+                        <input type="hidden" asp-for="Estoque" value="1" />
+
+                        <span asp-validation-for="Estoque" class="text-danger"></span>
+                    </div>
+
+                    <!-- QUANTIDADE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Quantidade</label>
+                        <input asp-for="Quantidade" type="number" class="form-control" />
+                        <span asp-validation-for="Quantidade" class="text-danger"></span>
+                    </div>
+
+                    <!-- MOTIVO -->
+                    <div class="mb-3" id="motivoContainer" style="display:none;">
+                        <label class="form-label fw-semibold">Motivo do Zeramento</label>
+                        <input asp-for="Motivo" class="form-control" placeholder="Informe o motivo do zeramento" />
+                        <span asp-validation-for="Motivo" class="text-danger"></span>
+                    </div>
+
+                    <!-- FOTO -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Foto do Produto</label>
+                        <input asp-for="FotoUpload" type="file" class="form-control" accept="image/*" onchange="previewFoto(this)" />
+                        <div class="mt-3 text-center">
+                            @if (!string.IsNullOrEmpty(Model.Foto))
+                            {
+                                <img id="previewImagem"
+                                     src="~/uploads/produtos/@Model.Foto"
+                                     class="img-thumbnail shadow-sm"
+                                     style="max-width:200px; cursor:pointer"
+                                     onclick="abrirModal()" />
+                            }
+                            else
+                            {
+                                <img id="previewImagem"
+                                     class="img-thumbnail shadow-sm"
+                                     style="max-width:200px; display:none;" />
+                            }
+                        </div>
+                    </div>
+
+
+                    <!-- AÇÕES -->
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary">⬅️ Voltar</a>
+                        <button type="submit" class="btn btn-primary shadow-sm">💾 Atualizar Produto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL FOTO -->
+<div class="modal fade" id="fotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="modalImagem" class="img-fluid rounded shadow" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Mostrar motivo dinamicamente se estoque for 0
+        const estoqueInput = document.getElementById('estoqueInput');
+        const motivoContainer = document.getElementById('motivoContainer');
+
+        function toggleMotivo() {
+            motivoContainer.style.display = parseInt(estoqueInput.value) === 0 ? 'block' : 'none';
+        }
+        estoqueInput.addEventListener('input', toggleMotivo);
+        toggleMotivo();
+
+        // Preview foto
+        function previewFoto(input) {
+            const img = document.getElementById("previewImagem");
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                    img.style.display = "block";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // Modal da foto
+        function abrirModal() {
+            const img = document.getElementById("previewImagem");
+            const modalImg = document.getElementById("modalImagem");
+            modalImg.src = img.src;
+            new bootstrap.Modal(document.getElementById('fotoModal')).show();
+        }
+    </script>
+}

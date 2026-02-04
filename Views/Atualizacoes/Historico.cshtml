@@ -1,0 +1,168 @@
+﻿@model IEnumerable<Estoque.Models.AtualizacaoSistema>
+
+@{
+    ViewData["Title"] = "Histórico de Atualizações";
+}
+
+<!-- TÍTULO -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-0">📄 Histórico de Atualizações</h2>
+        <small class="text-muted">Registro completo das ações do sistema</small>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-md-4">
+        <input type="text"
+               id="filtroTexto"
+               class="form-control"
+               placeholder="🔍 Buscar por produto, patrimônio ou descrição...">
+    </div>
+</div>
+
+<!-- FILTRO -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body d-flex flex-wrap gap-2 align-items-center">
+
+        <span class="fw-semibold me-2">🔍 Filtrar por tipo:</span>
+
+        <button class="btn btn-sm btn-outline-secondary active"
+                data-tipo="todos">
+            Todos
+        </button>
+
+        <button class="btn btn-sm btn-outline-primary"
+                data-tipo="entrada">
+            ⬆️ Entrada
+        </button>
+
+        <button class="btn btn-sm btn-outline-danger"
+                data-tipo="saida">
+            ⬇️ Saída
+        </button>
+
+        <button class="btn btn-sm btn-outline-info"
+                data-tipo="produto">
+            📦 Produto
+        </button>
+
+        <button class="btn btn-sm btn-outline-warning"
+                data-tipo="movimentacao">
+            🔄 Movimentação
+        </button>
+    </div>
+</div>
+
+
+<div class="row">
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            var ehNovo = (DateTime.Now - item.Data).TotalHours <= 24;
+
+            string icone = item.Tipo?.ToLower() switch
+            {
+                "entrada" => "⬆️",
+                "saida" => "⬇️",
+                "estoque" => "📦",
+                "movimentacao" => "🔄",
+                "produto" => "🆕",
+                _ => "⚙️"
+            };
+
+            <div class="col-12 mb-3 atualizacao-item"
+                 data-tipo="@item.Tipo?.ToLower()"
+                 data-texto="@((
+                         (item.Titulo ?? "") + " " +
+                         (item.Descricao ?? "") + " " +
+                         (item.Patrimonio ?? "") + " " +
+                         (item.ProdutoNome ?? "")
+                      ).ToLower())">
+
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+
+                        <!-- CABEÇALHO -->
+                        <div class="d-flex justify-content-between align-items-start">
+
+                            <!-- ÍCONE + TEXTO -->
+                            <div class="d-flex align-items-start gap-3">
+
+                                <!-- ÍCONE -->
+                                <span class="fs-4 mt-1">@Html.Raw(icone)</span>
+
+                                <!-- TEXTO -->
+                                <div class="w-100">
+
+                                    <!-- TÍTULO -->
+                                    <div class="fw-semibold mb-1">
+                                        @if (item.Tipo == "produto" && !string.IsNullOrEmpty(item.ProdutoNome))
+                                        {
+                                            @($"Produto cadastrado: {item.ProdutoNome}")
+                                        }
+                                        else
+                                        {
+                                            @item.Titulo
+                                        }
+                                    </div>
+
+                                    <!-- DATA / HORA -->
+                                    <div class="text-muted small">
+                                        🕓 @item.Data.ToString("dd/MM/yyyy HH:mm")
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- BADGE NOVO -->
+                            @if (ehNovo)
+                            {
+                                <span class="badge bg-danger ms-2">Novo</span>
+                            }
+                        </div>
+
+                        <!-- DESCRIÇÃO -->
+                        @if (!string.IsNullOrEmpty(item.Descricao))
+                        {
+                            <div class="descricao-atualizacao mt-3 p-3 rounded small"
+                                 style="white-space: pre-line;">
+                                @item.Descricao
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-light text-center shadow-sm">
+                😴 Nenhuma atualização registrada.
+            </div>
+        </div>
+    }
+</div>
+<script>
+    const inputBusca = document.getElementById("filtroTexto");
+
+    inputBusca.addEventListener("keyup", function () {
+        const termo = inputBusca.value.toLowerCase();
+        const itens = document.querySelectorAll(".atualizacao-item");
+
+        itens.forEach(item => {
+            const texto = item.dataset.texto;
+
+            if (texto.includes(termo)) {
+                item.style.display = "";
+            } else {
+                item.style.display = "none";
+            }
+        });
+    });
+</script>
+
+

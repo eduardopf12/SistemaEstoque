@@ -1,0 +1,86 @@
+﻿@model Estoque.Models.Usuario
+
+<h2>Criar Usuário</h2>
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success">@TempData["Sucesso"]</div>
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-controller="Account" asp-action="Register" method="post">
+
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                <input asp-for="Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Senha</label>
+                <input asp-for="Senha" type="password" class="form-control" />
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Perfil</label>
+                <select asp-for="Perfil" class="form-select">
+                    <option value="Admin">Admin</option>
+                    <option value="Gerente">Gerente</option>
+                    <option value="Operador">Operador</option>
+                    <option value="Visualizador">Visualizador</option>
+                </select>
+            </div>
+
+
+            <button type="submit" class="btn btn-success">Salvar</button>
+            <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">Voltar</a>
+        </form>
+    </div>
+
+    <div class="col-md-6">
+        <h4>Usuários Cadastrados</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Perfil</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in ViewBag.Usuarios)
+                {
+                    <tr>
+                        <td>@u.Nome</td>
+                        <td>@u.Email</td>
+                        <td>
+                            <span class="badge @(u.Perfil == "Admin" ? "bg-warning text-dark" : "bg-secondary")">@u.Perfil</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h4>Últimos Logs</h4>
+        <ul class="list-group">
+            @foreach (var log in ViewBag.Logs)
+            {
+                <li class="list-group-item">
+                    <strong>@log.Usuario</strong> @log.Acao <em>@log.Alvo</em> em @log.Data.ToString("dd/MM/yyyy HH:mm")
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

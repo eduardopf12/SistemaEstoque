@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Estoque.Models.Usuario>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Título + ajuda lado a lado -->
+    <div class="d-flex align-items-center gap-2">
+        <h2 class="mb-0">Usuários</h2>
+        <button class="btn btn-sm btn-outline-secondary p-1"
+                data-bs-toggle="tooltip"
+                title="Aqui você cadastra todos Usuários.">
+            ❔
+        </button>
+    </div>
+
+    <!-- Botão Novo Usuário -->
+    <a asp-controller="Account"
+       asp-action="Register"
+       class="btn btn-primary">
+        ➕ Novo Usuário
+    </a>
+</div>
+
+
+<table class="table table-hover align-middle">
+    <thead class="table-light">
+        <tr>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Perfil</th>
+            <th style="width: 180px;">Ações</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Nome</td>
+                <td>@u.Email</td>
+                <td>
+                    <span class="badge @(u.Perfil == "Admin" ? "bg-warning text-dark" : "bg-secondary")">
+                        @u.Perfil
+                    </span>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-outline-warning">
+                        ✏️
+                    </a>
+
+                    <a asp-action="ToggleStatus" asp-route-id="@u.Id"
+                       class="btn btn-sm @(u.Ativo ? "btn-outline-secondary" : "btn-outline-success")"
+                       title="@(u.Ativo ? "Desativar" : "Ativar")">
+                        @(u.Ativo ? "🚫" : "✅")
+                    </a>
+
+                    <form asp-action="Delete" asp-route-id="@u.Id" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Excluir permanentemente este usuário?');">
+                            🗑️
+                        </button>
+                    </form>
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

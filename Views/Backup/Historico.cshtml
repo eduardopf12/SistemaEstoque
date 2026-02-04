@@ -1,0 +1,93 @@
+﻿@model List<Estoque.Models.BackupLog>
+
+<div class="container-fluid py-4">
+
+    <!-- TÍTULO -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📜 Histórico de Backups</h2>
+        <div class="d-flex gap-2">
+            <a asp-action="Index" class="btn btn-secondary shadow-sm">⬅️ Voltar</a>
+        </div>
+    </div>
+
+    <!-- ALERTA SE NÃO HOUVER LOGS -->
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            Nenhum backup registrado até o momento.
+        </div>
+    }
+    else
+    {
+        <!-- TABELA DE LOGS -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                    <table class="table table-hover table-striped table-bordered mb-0 align-middle">
+                        <thead class="table-dark sticky-top">
+                            <tr>
+                                <th>Ação</th>
+                                <th>Arquivo</th>
+                                <th>Usuário</th>
+                                <th>Data</th>
+                                <th>Status</th>
+                                <th>Erro</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var log in Model)
+                            {
+                                <tr>
+                                    <td>@log.Acao</td>
+                                    <td>@log.Arquivo</td>
+                                    <td>@log.Usuario</td>
+                                    <td>@log.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (log.Status == "Sucesso")
+                                        {
+                                            <span class="badge bg-success">Sucesso</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Erro</span>
+                                        }
+                                    </td>
+                                    <td class="text-truncate" style="max-width: 200px;">@log.MensagemErro</td>
+                                    <td class="d-flex gap-1">
+                                        @* Botão Restaurar *@
+                                        @if (!string.IsNullOrEmpty(log.Arquivo))
+                                        {
+                                            <form method="post" asp-action="RestaurarBackup" style="display:inline;">
+                                                <input type="hidden" name="fileName" value="@log.Arquivo" />
+                                                <button type="submit" class="btn btn-warning btn-sm"
+                                                        onclick="return confirm('Deseja realmente restaurar este backup?');">
+                                                    ♻️ Restaurar
+                                                </button>
+                                            </form>
+
+                                            @* Botão Baixar *@
+                                            <a asp-action="DownloadBackup" asp-route-fileName="@log.Arquivo"
+                                               class="btn btn-info btn-sm" target="_blank">
+                                                ⬇️ Baixar
+                                            </a>
+
+                                            @* Botão Excluir *@
+                                            <form method="post" asp-action="ExcluirBackup" style="display:inline;">
+                                                <input type="hidden" name="fileName" value="@log.Arquivo" />
+                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                        onclick="return confirm('Deseja realmente excluir este backup?');">
+                                                    🗑️ Excluir
+                                                </button>
+                                            </form>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+</div>

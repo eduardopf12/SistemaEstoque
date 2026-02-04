@@ -1,0 +1,123 @@
+﻿@model List<System.IO.FileInfo>
+
+@{
+    ViewData["Title"] = "Backup & Restauração";
+}
+
+<div class="d-flex align-items-center mb-4 gap-2">
+    <h2 class="fw-bold mb-0">💾 Backup &amp; Restauração</h2>
+
+    <button class="btn btn-sm btn-outline-secondary p-1"
+            data-bs-toggle="tooltip"
+            title="Aqui você realiza e restaura backups.">
+        ❔
+    </button>
+</div>
+
+
+@if (TempData["Mensagem"] != null)
+{
+    <div class="alert alert-success">@TempData["Mensagem"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<div class="card border-0 shadow-sm p-4 mb-4">
+    <div class="row g-4">
+
+        <!-- AÇÕES -->
+        <div class="col-md-5">
+            <div class="d-grid gap-3">
+
+                <!-- FAZER BACKUP -->
+                <form asp-action="FazerBackup" method="post">
+                    <button type="submit" class="btn btn-warning btn-lg shadow-sm w-100">
+                        💾 Fazer Backup Agora
+                    </button>
+                </form>
+
+                <!-- HISTÓRICO -->
+                <a asp-controller="Backup"
+                   asp-action="Historico"
+                   class="btn btn-outline-info">
+                    📜 Ver Histórico de Backups
+                </a>
+
+            </div>
+        </div>
+
+        <!-- LISTA DE BACKUPS -->
+        <div class="col-md-7">
+            <div class="card border-0 shadow-sm p-3">
+                <h5 class="fw-bold mb-3">📂 Backups Disponíveis</h5>
+
+                <ul class="list-group list-group-flush">
+                    @if (Model.Any())
+                    {
+                        @foreach (var file in Model)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@file.Name</span>
+
+                                <div class="d-flex gap-1">
+
+                                    <!-- DOWNLOAD -->
+                                    <a asp-action="DownloadBackup"
+                                       asp-route-fileName="@file.Name"
+                                       class="btn btn-sm btn-info">
+                                        ⬇️
+                                    </a>
+                                    <!-- RESTAURAR -->
+                                    <form asp-action="RestaurarBackup"
+                                          method="post"
+                                          class="d-inline"
+                                          onsubmit="return confirm('⚠️ Restaurar este backup irá substituir todos os dados atuais. Deseja continuar?');">
+
+                                        <input type="hidden" name="fileName" value="@file.Name" />
+
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            ♻️
+                                        </button>
+                                    </form>
+
+
+                                    <!-- EXCLUIR -->
+                                    <form asp-action="ExcluirBackup"
+                                          method="post"
+                                          class="d-inline"
+                                          onsubmit="return confirm('Deseja excluir este backup?');">
+
+                                        <input type="hidden" name="fileName" value="@file.Name" />
+
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            🗑️
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </li>
+                        }
+                    }
+                    else
+                    {
+                        <li class="list-group-item text-muted">
+                            Nenhum backup encontrado.
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-muted mt-3">
+    ⚠️ Atenção: Restaurar um backup sobrescreve todos os dados atuais do banco.
+</div>
+<!-- BOTÃO VOLTAR -->
+<div class="d-flex justify-content-start mt-3">
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-secondary">
+        ⬅️ Voltar
+    </a>
+</div>
